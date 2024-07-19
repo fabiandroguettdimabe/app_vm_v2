@@ -106,12 +106,14 @@ class ServiceCreatedDto {
 
 @JsonSerializable()
 class ServiceShowMobileDto {
-  final int? id;
-  final ClientDto? client;
-  final LocationShowDto? originLocation;
-  final LocationShowDto? destinyLocation;
-  final CollectionMethodDto? collectionMethod;
-  final CollectionMethodDto? journeyType;
+  int? id;
+  ClientDto? client;
+  LocationShowDto? originLocation;
+  LocationShowDto? destinyLocation;
+  CollectionMethodDto? collectionMethod;
+  CollectionMethodDto? journeyType;
+  bool? commissionByContainer;
+  int? containerQty;
 
   ServiceShowMobileDto({
     this.id,
@@ -120,6 +122,8 @@ class ServiceShowMobileDto {
     this.destinyLocation,
     this.collectionMethod,
     this.journeyType,
+    this.commissionByContainer,
+
   });
 
   factory ServiceShowMobileDto.fromJson(Map<String, dynamic> json) =>

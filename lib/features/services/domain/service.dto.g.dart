@@ -134,6 +134,7 @@ ServiceShowMobileDto _$ServiceShowMobileDtoFromJson(
           ? null
           : CollectionMethodDto.fromJson(
               json['journeyType'] as Map<String, dynamic>),
+      commissionByContainer: json['commissionByContainer'] as bool?,
     );
 
 Map<String, dynamic> _$ServiceShowMobileDtoToJson(
@@ -145,4 +146,5 @@ Map<String, dynamic> _$ServiceShowMobileDtoToJson(
       'destinyLocation': instance.destinyLocation,
       'collectionMethod': instance.collectionMethod,
       'journeyType': instance.journeyType,
+      'commissionByContainer': instance.commissionByContainer,
     };

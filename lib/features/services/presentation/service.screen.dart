@@ -1,11 +1,18 @@
+import 'package:app_vm/constants/constants.dart';
 import 'package:app_vm/constants/widgets/avatar.icon.title.widget.dart';
 import 'package:app_vm/features/services/application/service.service.dart';
+import 'package:app_vm/features/services/domain/service.dto.dart';
+import 'package:app_vm/theme/color.config.dart';
 import 'package:async_builder/async_builder.dart';
+import 'package:async_button_builder/async_button_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_awesome_select_clone/flutter_awesome_select.dart';
 import 'package:flutter_mdi_icons/flutter_mdi_icons.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:map_launcher/map_launcher.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../../../utils/map.util.dart';
 
@@ -143,10 +150,179 @@ class _ServiceScreenState extends State<ServiceScreen> {
                 dense: true,
                 subtitle: Text(value.journeyType!.name!),
               ),
+              Visibility(
+                  visible: value.commissionByContainer ?? false,
+                  child: Wrap(
+                    children: [
+                      const Divider(),
+                      ListTile(
+                        leading: Padding(
+                          padding: EdgeInsets.all(Adaptive.px(10)),
+                          child: SvgPicture.asset(
+                            'assets/svg/cargo_container_icon.svg',
+                            colorFilter: ColorFilter.mode(
+                                Theme.of(context).iconTheme.color ??
+                                    Colors.black,
+                                BlendMode.srcIn),
+                            width: Adaptive.w(2),
+                            height: Adaptive.h(2),
+                          ),
+                        ),
+                        title: const Text("Cantidad de Contenedores"),
+                        subtitle: Text(value.containerQty != null
+                            ? value.containerQty.toString()
+                            : ""),
+                        trailing: IconButton(
+                          color: Colors.transparent,
+                          icon: Icon(Mdi.squareEditOutline,
+                              color: Get.theme.iconTheme.color),
+                          onPressed: () {
+                            showQuantityContainer(context, value);
+                          },
+                        ),
+                      ),
+                      const Divider(),
+                    ],
+                  )),
+              Padding(
+                padding: const EdgeInsets.only(left : 20, right: 20, bottom: 10),
+                child: AsyncButtonBuilder(
+                  builder: (context, child, callback, buttonState) {
+                    return ElevatedButton(
+                      onPressed: callback,
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColorDark),
+                      child: child,
+                    );
+                  },
+                  child: ListTile(
+                    leading: AvatarIconTitleWidget(icon: FontAwesome.map),
+                    title: const Text(
+                      "Ir al Mapa",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  onPressed: () async {},
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left : 20, right: 20, bottom: 10),
+                child: AsyncButtonBuilder(
+                  builder: (context, child, callback, buttonState) {
+                    return ElevatedButton(
+                      onPressed: callback,
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColorDark),
+                      child: child,
+                    );
+                  },
+                  child: ListTile(
+                    leading: AvatarIconTitleWidget(icon: Mdi.truckAlertOutline),
+                    title: const Text(
+                      "Registrar Evento/Comentario",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  onPressed: () async {},
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left : 20, right: 20, bottom: 10),
+                child: AsyncButtonBuilder(
+                  builder: (context, child, callback, buttonState) {
+                    return ElevatedButton(
+                      onPressed: callback,
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: successColor),
+                      child: child,
+                    );
+                  },
+                  child: ListTile(
+                    leading: AvatarIconTitleWidget(icon: Mdi.truckCheckOutline),
+                    title: const Text(
+                      "Finalizar viaje",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  onPressed: () async {},
+                ),
+              ),
             ],
           ),
         );
       },
+    );
+  }
+
+  showQuantityContainer(BuildContext context, ServiceShowMobileDto service) {
+    Get.bottomSheet(
+      Wrap(
+        children: [
+          Card(
+            elevation: 10,
+            child: ListTile(
+              leading: Padding(
+                padding: EdgeInsets.all(Adaptive.px(10)),
+                child: SvgPicture.asset(
+                  'assets/svg/cargo_container_icon.svg',
+                  colorFilter: ColorFilter.mode(
+                      Theme.of(context).iconTheme.color ?? Colors.black,
+                      BlendMode.srcIn),
+                  width: Adaptive.w(2),
+                  height: Adaptive.h(2),
+                ),
+              ),
+              title: const Text("Ingrese la cantidad de contenedores"),
+            ),
+          ),
+          SmartSelect<int?>.single(
+            modalHeaderStyle: S2ModalHeaderStyle(
+              centerTitle: true,
+              textStyle: Get.theme.textTheme.titleMedium,
+              actionsIconTheme: Get.theme.iconTheme,
+              iconTheme: Get.theme.iconTheme,
+            ),
+            selectedValue: service.containerQty,
+            title: "Cantidad de contenedores",
+            choiceItems: qtyContainer
+                .map((e) => S2Choice<int?>(value: e, title: e.toString()))
+                .toList(),
+            modalConfig: const S2ModalConfig(type: S2ModalType.bottomSheet),
+            onChange: (value) {
+              service.containerQty = value.choice?.value;
+            },
+          ),
+          const Divider(),
+          ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              AsyncButtonBuilder(
+                child: const Text(
+                  "Guardar",
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () async {
+                  Get.back();
+                  setState(() {});
+                },
+                builder: (context, child, callback, buttonState) {
+                  return ElevatedButton.icon(
+                    onPressed: callback,
+                    icon: AvatarIconTitleWidget(
+                      icon: Icons.save,
+                      color: Colors.white,
+                    ),
+                    label: child,
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: successColor),
+                  );
+                },
+              )
+            ],
+          )
+        ],
+      ),
+      backgroundColor: Get.theme.dialogBackgroundColor,
     );
   }
 }
