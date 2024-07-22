@@ -114,6 +114,7 @@ class ServiceShowMobileDto {
   CollectionMethodDto? journeyType;
   bool? commissionByContainer;
   int? containerQty;
+  List<ServiceLineShowDto>? lines;
 
   ServiceShowMobileDto({
     this.id,
@@ -123,11 +124,34 @@ class ServiceShowMobileDto {
     this.collectionMethod,
     this.journeyType,
     this.commissionByContainer,
-
+    this.containerQty,
+    this.lines,
   });
 
   factory ServiceShowMobileDto.fromJson(Map<String, dynamic> json) =>
       _$ServiceShowMobileDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$ServiceShowMobileDtoToJson(this);
+}
+
+@JsonSerializable()
+class ServiceLineShowDto {
+  int? id;
+  String? title;
+  double? weightQuantity;
+  String? uomName;
+  double? quantity;
+  String? guideNumbers;
+
+  ServiceLineShowDto(
+      {this.id,
+      this.title,
+      this.weightQuantity,
+      this.uomName,
+      this.quantity,
+      this.guideNumbers});
+
+  factory ServiceLineShowDto.fromJson(Map<String, dynamic> json) => _$ServiceLineShowDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServiceLineShowDtoToJson(this);
 }

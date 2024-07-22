@@ -135,6 +135,10 @@ ServiceShowMobileDto _$ServiceShowMobileDtoFromJson(
           : CollectionMethodDto.fromJson(
               json['journeyType'] as Map<String, dynamic>),
       commissionByContainer: json['commissionByContainer'] as bool?,
+      containerQty: (json['containerQty'] as num?)?.toInt(),
+      lines: (json['lines'] as List<dynamic>?)
+          ?.map((e) => ServiceLineShowDto.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ServiceShowMobileDtoToJson(
@@ -147,4 +151,26 @@ Map<String, dynamic> _$ServiceShowMobileDtoToJson(
       'collectionMethod': instance.collectionMethod,
       'journeyType': instance.journeyType,
       'commissionByContainer': instance.commissionByContainer,
+      'containerQty': instance.containerQty,
+      'lines': instance.lines,
+    };
+
+ServiceLineShowDto _$ServiceLineShowDtoFromJson(Map<String, dynamic> json) =>
+    ServiceLineShowDto(
+      id: (json['id'] as num?)?.toInt(),
+      title: json['title'] as String?,
+      weightQuantity: (json['weightQuantity'] as num?)?.toDouble(),
+      uomName: json['uomName'] as String?,
+      quantity: (json['quantity'] as num?)?.toDouble(),
+      guideNumbers: json['guideNumbers'] as String?,
+    );
+
+Map<String, dynamic> _$ServiceLineShowDtoToJson(ServiceLineShowDto instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'weightQuantity': instance.weightQuantity,
+      'uomName': instance.uomName,
+      'quantity': instance.quantity,
+      'guideNumbers': instance.guideNumbers,
     };

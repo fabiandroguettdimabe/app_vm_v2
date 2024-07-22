@@ -38,12 +38,14 @@ class _ServiceScreenState extends State<ServiceScreen> {
   Widget build(BuildContext context) {
     return AsyncBuilder(
       future: ServiceService.getService(id),
-      waiting: (context) => const Center(
+      waiting: (context) =>
+      const Center(
         child: CircularProgressIndicator(),
       ),
-      error: (context, error, stackTrace) => Center(
-        child: Text('Error: $error'),
-      ),
+      error: (context, error, stackTrace) =>
+          Center(
+            child: Text('Error: $error'),
+          ),
       builder: (context, value) {
         return Scaffold(
           appBar: AppBar(
@@ -61,7 +63,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
               const Divider(),
               ListTile(
                 leading:
-                    AvatarIconTitleWidget(icon: FontAwesome.building_solid),
+                AvatarIconTitleWidget(icon: FontAwesome.building_solid),
                 title: const Text("Cliente"),
                 dense: true,
                 subtitle: Text(value.client!.name!),
@@ -87,7 +89,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
                                 value.originLocation!.longitude!,
                               ),
                             ),
-                            waiting: (context) => const Center(
+                            waiting: (context) =>
+                            const Center(
                                 child: CircularProgressIndicator()),
                             builder: (context, value) {
                               return Wrap(
@@ -122,7 +125,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
                                 value.destinyLocation!.longitude!,
                               ),
                             ),
-                            waiting: (context) => const Center(
+                            waiting: (context) =>
+                            const Center(
                                 child: CircularProgressIndicator()),
                             builder: (context, value) {
                               return Wrap(
@@ -161,7 +165,10 @@ class _ServiceScreenState extends State<ServiceScreen> {
                           child: SvgPicture.asset(
                             'assets/svg/cargo_container_icon.svg',
                             colorFilter: ColorFilter.mode(
-                                Theme.of(context).iconTheme.color ??
+                                Theme
+                                    .of(context)
+                                    .iconTheme
+                                    .color ??
                                     Colors.black,
                                 BlendMode.srcIn),
                             width: Adaptive.w(2),
@@ -184,8 +191,10 @@ class _ServiceScreenState extends State<ServiceScreen> {
                       const Divider(),
                     ],
                   )),
+              const Divider(),
+              showLines(context, value.lines),
               Padding(
-                padding: const EdgeInsets.only(left : 20, right: 20, bottom: 10),
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
                 child: AsyncButtonBuilder(
                   builder: (context, child, callback, buttonState) {
                     return ElevatedButton(
@@ -206,7 +215,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left : 20, right: 20, bottom: 10),
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
                 child: AsyncButtonBuilder(
                   builder: (context, child, callback, buttonState) {
                     return ElevatedButton(
@@ -227,7 +236,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left : 20, right: 20, bottom: 10),
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
                 child: AsyncButtonBuilder(
                   builder: (context, child, callback, buttonState) {
                     return ElevatedButton(
@@ -266,7 +275,10 @@ class _ServiceScreenState extends State<ServiceScreen> {
                 child: SvgPicture.asset(
                   'assets/svg/cargo_container_icon.svg',
                   colorFilter: ColorFilter.mode(
-                      Theme.of(context).iconTheme.color ?? Colors.black,
+                      Theme
+                          .of(context)
+                          .iconTheme
+                          .color ?? Colors.black,
                       BlendMode.srcIn),
                   width: Adaptive.w(2),
                   height: Adaptive.h(2),
@@ -314,7 +326,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                     ),
                     label: child,
                     style:
-                        ElevatedButton.styleFrom(backgroundColor: successColor),
+                    ElevatedButton.styleFrom(backgroundColor: successColor),
                   );
                 },
               )
@@ -324,5 +336,48 @@ class _ServiceScreenState extends State<ServiceScreen> {
       ),
       backgroundColor: Get.theme.dialogBackgroundColor,
     );
+  }
+
+  showLines(BuildContext context, List<ServiceLineShowDto>? lines) {
+    return ListView.separated(
+        itemCount: lines!.length,
+        itemBuilder: (context, index)
+    {
+      final line = lines[index];
+      return Wrap(
+        alignment: WrapAlignment.center,
+        children: [
+          ListTile(
+            leading: AvatarIconTitleWidget(icon: FontAwesome.cube_solid),
+            dense: true,
+            title: const Text("Cantidad: "),
+            subtitle: Text(line.quantity != null
+                ? "${line.quantity} ${line.uomName}"
+                : "Sin definir"),
+          )
+        ],
+      );
+    },
+    separatorBuilder: (context, index) {
+      final line = lines[index];
+      if (line == lines.first) {
+        return Card(
+          elevation: 10,
+          child: SizedBox(
+            height: Adaptive.h(10),
+            child: ListTile(
+              leading: AvatarIconTitleWidget(
+                icon: FontAwesome.info_solid,
+              ),
+              dense: true,
+              title: Text("Detalle de linea ${index + 1}"),
+            ),
+          ),
+        );
+      }
+      else {
+        return SizedBox(height: Adaptive.h(10));
+      }
+    });
   }
 }

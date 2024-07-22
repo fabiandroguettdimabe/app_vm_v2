@@ -15,21 +15,21 @@ appRoutes() => [
         page: () => const LoginScreen(),
       ),
       GetPage(
-        name: '/',
-        page: () => const HomeScreen(),
-      ),
+          name: '/',
+          page: () => const HomeScreen(),
+          middlewares: [AppMiddleware()]),
       GetPage(
-        name: '/select-truck',
-        page: () => const TruckScreen(),
-      ),
+          name: '/select-truck',
+          page: () => const TruckScreen(),
+          middlewares: [AppMiddleware()]),
       GetPage(
-        name: '/new-service',
-        page: () => const NewServiceScreen(),
-      ),
+          name: '/new-service',
+          page: () => const NewServiceScreen(),
+          middlewares: [AppMiddleware()]),
       GetPage(
-        name: '/service',
-        page: () => const ServiceScreen(),
-      ),
+          name: '/service',
+          page: () => const ServiceScreen(),
+          middlewares: [AppMiddleware()]),
     ];
 
 class AppMiddleware extends GetMiddleware {
