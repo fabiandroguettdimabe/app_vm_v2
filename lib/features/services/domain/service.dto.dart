@@ -114,19 +114,21 @@ class ServiceShowMobileDto {
   CollectionMethodDto? journeyType;
   bool? commissionByContainer;
   int? containerQty;
+  @JsonKey(name: "serviceLines")
   List<ServiceLineShowDto>? lines;
+  int? state;
 
-  ServiceShowMobileDto({
-    this.id,
-    this.client,
-    this.originLocation,
-    this.destinyLocation,
-    this.collectionMethod,
-    this.journeyType,
-    this.commissionByContainer,
-    this.containerQty,
-    this.lines,
-  });
+  ServiceShowMobileDto(
+      {this.id,
+      this.client,
+      this.originLocation,
+      this.destinyLocation,
+      this.collectionMethod,
+      this.journeyType,
+      this.commissionByContainer,
+      this.containerQty,
+      this.lines,
+      this.state});
 
   factory ServiceShowMobileDto.fromJson(Map<String, dynamic> json) =>
       _$ServiceShowMobileDtoFromJson(json);
@@ -142,6 +144,8 @@ class ServiceLineShowDto {
   String? uomName;
   double? quantity;
   String? guideNumbers;
+  bool? canEdit;
+  bool? canEditWeight;
 
   ServiceLineShowDto(
       {this.id,
@@ -149,9 +153,56 @@ class ServiceLineShowDto {
       this.weightQuantity,
       this.uomName,
       this.quantity,
-      this.guideNumbers});
+      this.guideNumbers,
+      this.canEdit,
+      this.canEditWeight});
 
-  factory ServiceLineShowDto.fromJson(Map<String, dynamic> json) => _$ServiceLineShowDtoFromJson(json);
+  factory ServiceLineShowDto.fromJson(Map<String, dynamic> json) =>
+      _$ServiceLineShowDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$ServiceLineShowDtoToJson(this);
+}
+
+@JsonSerializable()
+class ServiceLineUpdateDto {
+  int? id;
+  double? weightQuantity;
+  double? quantity;
+  String? guideNumbers;
+
+  ServiceLineUpdateDto(
+      {this.id, this.weightQuantity, this.quantity, this.guideNumbers});
+
+  factory ServiceLineUpdateDto.fromJson(Map<String, dynamic> json) =>
+      _$ServiceLineUpdateDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServiceLineUpdateDtoToJson(this);
+}
+
+@JsonSerializable()
+class ServiceFinishDto {
+  int? serviceId;
+  int? truckId;
+  LogDto? finishLog;
+
+  ServiceFinishDto({this.serviceId,this.truckId, this.finishLog});
+
+  factory ServiceFinishDto.fromJson(Map<String, dynamic> json) =>
+      _$ServiceFinishDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServiceFinishDtoToJson(this);
+}
+
+@JsonSerializable()
+class ServiceDestinyDoneDto {
+  int? serviceId;
+  int? truckId;
+  LogDto? destinyDoneLog;
+
+  ServiceDestinyDoneDto({this.serviceId,this.truckId, this.destinyDoneLog});
+
+  factory ServiceDestinyDoneDto.fromJson(Map<String, dynamic> json) =>
+      _$ServiceDestinyDoneDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServiceDestinyDoneDtoToJson(this);
 }

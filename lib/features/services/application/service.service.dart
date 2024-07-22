@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
 class ServiceService {
+  // Services
   static Future<void> createService(CreateServiceDto model) async {
     try {
       var response =
@@ -51,5 +52,54 @@ class ServiceService {
     if (!apiResponse.data!.containsKey('quantity')) return 0;
     if (apiResponse.statusCode != 200) return null;
     return apiResponse.data!['quantity'] as int ?? 0;
+  }
+
+  static Future<void> finishService(ServiceFinishDto dto) async {
+    try {
+      var response =
+          await DioUtil.dio.put(endpointServiceFinish, data: dto.toJson());
+      if (response.statusCode != 200) return null;
+      var apiResponse = ResponseDto.fromJson(response.data);
+      if (apiResponse.statusCode != 200) return null;
+      Get.offNamed('/');
+    } on DioException catch (e) {
+      var errorResponse = ResponseDto.fromJson(e.response?.data);
+      if (errorResponse.statusCode == 400) {
+        Get.snackbar('Error', errorResponse.message!);
+      }
+    }
+  }
+
+  static Future<void> destinyDoneService(ServiceDestinyDoneDto dto) async {
+    try {
+      var response =
+          await DioUtil.dio.put(endpointServiceDestinyDone, data: dto.toJson());
+      if (response.statusCode != 200) return null;
+      var apiResponse = ResponseDto.fromJson(response.data);
+      if (apiResponse.statusCode != 200) return null;
+      Get.back();
+    } on DioException catch (e) {
+      var errorResponse = ResponseDto.fromJson(e.response?.data);
+      if (errorResponse.statusCode == 400) {
+        Get.snackbar('Error', errorResponse.message!);
+      }
+    }
+  }
+
+  // Services Lines
+  static Future<void> updateServiceLine(ServiceLineUpdateDto model) async {
+    try {
+      var response = await DioUtil.dio
+          .put(endpointServiceUpdateLine, data: model.toJson());
+      if (response.statusCode != 200) return null;
+      var apiResponse = ResponseDto.fromJson(response.data);
+      if (apiResponse.statusCode != 200) return null;
+      Get.back();
+    } on DioException catch (e) {
+      var errorResponse = ResponseDto.fromJson(e.response?.data);
+      if (errorResponse.statusCode == 400) {
+        Get.snackbar('Error', errorResponse.message!);
+      }
+    }
   }
 }

@@ -7,7 +7,7 @@ import 'package:app_vm/utils/dio.util.dart';
 class ClientService {
   static Future<List<ClientDto>?> getClientsByOperations() async {
     var operationId = await UserPreferences.getInt('operationId');
-    if (operationId == null) return null;
+    if (operationId == null) return [];
     var response = await DioUtil.dio.get(endpointClientByOperationMobile,
         queryParameters: {'operationId': operationId});
     if (response.statusCode != 200) return null;

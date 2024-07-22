@@ -4,6 +4,7 @@ import 'package:app_vm/preferences/user.preferences.dart';
 import 'package:app_vm/theme/color.config.dart';
 import 'package:async_button_builder/async_button_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -120,12 +121,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () async {
-                            var loginData = LoginRequestDto(vat: _userController.text, password: _passwordController.text);
+                            var loginData = LoginRequestDto(
+                                vat: _userController.text,
+                                password: _passwordController.text);
                             var result = await AuthService.login(loginData);
                             if (result) {
-                                Get.offNamed('/select-truck');
+                              Get.offNamed('/select-truck');
                             } else {
-                              Get.snackbar('Error', 'Usuario o contraseña incorrectos');
+                              Get.snackbar(
+                                  'Error', 'Usuario o contraseña incorrectos');
                             }
                           },
                           builder: (context, child, callback, buttonState) {
@@ -153,8 +157,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 10,
                         ),
                         AsyncButtonBuilder(
-                          child: const Text("Ingresar con QR", style: TextStyle(color: Colors.white)),
-                          onPressed: () async {},
+                          child: const Text("Ingresar con QR",
+                              style: TextStyle(color: Colors.white)),
+                          onPressed: () async {
+                            String barcode =
+                                await FlutterBarcodeScanner.scanBarcode(
+                                    "#ECEFF1",
+                                    "Cancelar",
+                                    true,
+                                    ScanMode.BARCODE);
+                            bool result = await AuthService.loginQR(barcode);
+                            Get.offNamed("/");
+                          },
                           builder: (context, child, callback, buttonState) {
                             var buttonColor = buttonState.when(
                                 idle: () => primaryColorDark,

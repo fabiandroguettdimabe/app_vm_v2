@@ -1,6 +1,7 @@
 // Auth
 const endpointAuth = '/auth/';
 const endpointRefreshToken = '/mobile/auth/refresh';
+const endpointAuthQR = '/mobile/auth/login_qr';
 
 // Trucks
 const endpointTruckMobile = '/mobile/trucks/all';
@@ -30,3 +31,18 @@ const endpointService = '/mobile/services/create';
 
 // New Service - Show Service
 const endpointServiceShow = '/mobile/services/serviceshow';
+
+// Service - Update Service Line
+const endpointServiceUpdateLine = '/mobile/ServiceLine/updateLine';
+
+// Service - Get Service Line Dispatch Guide
+const endpointServiceLineDispatchGuide = '/mobile/GuideNumber/getByServiceLineId';
+
+// Service Line - Add Guide Number [TODO - Change Url for exclusive endpoint]
+const endpointDocumentsDispatchGuide = '/documentfiles/documentDispatchGuide';
+
+// Service - Destiny Done
+const endpointServiceDestinyDone = '/mobile/services/destinyDoneService';
+
+// Service - Finish Service
+const endpointServiceFinish = '/mobile/services/finishService';

@@ -45,13 +45,19 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Home'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                  context, '/login', (route) => false);
+          AsyncButtonBuilder(
+            child: const Icon(Icons.logout),
+            onPressed: () async {
+              UserPreferences.clear();
+              Get.offNamed('/login');
             },
-          )
+            builder: (context, child, callback, buttonState) {
+              return IconButton(
+                icon: child,
+                onPressed: callback,
+              );
+            },
+          ),
         ],
       ),
       body: ListView(
@@ -179,7 +185,9 @@ class _HomeScreenState extends State<HomeScreen> {
     // Load current truck
     var truckId = UserPreferences().getIntSync('truckId');
     var truckPatent = UserPreferences().getStringSync('truckPatent');
-    var currentTruck = TruckDto(id: truckId, patent: truckPatent);
+    var truckNumber = UserPreferences().getStringSync('truckNumber');
+    var currentTruck =
+    TruckDto(id: truckId, patent: truckPatent, truckNumber: truckNumber);
     // Load current operation
     var operationId = UserPreferences().getIntSync('operationId');
     var operationName = UserPreferences().getStringSync('operationName');
@@ -310,8 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                subtitle:
-                    Text(serviceInProcess![index].description ?? ""),
+                subtitle: Text(serviceInProcess![index].description ?? ""),
                 trailing: const Icon(FontAwesome.arrow_right_long_solid),
                 onTap: () {
                   Get.toNamed('/service', arguments: {

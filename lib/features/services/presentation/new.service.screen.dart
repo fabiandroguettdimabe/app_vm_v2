@@ -89,7 +89,7 @@ class _NewServiceScreenState extends State<NewServiceScreen> {
       originId: originId,
       destinyId: destinyId,
       collectionMethod: collectionMethodId,
-      journeyTypeId: collectionMethodId,
+      journeyTypeId: journeyTypeId,
     );
     setState(() {
       clientList = data?.clientIds;

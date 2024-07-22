@@ -136,9 +136,10 @@ ServiceShowMobileDto _$ServiceShowMobileDtoFromJson(
               json['journeyType'] as Map<String, dynamic>),
       commissionByContainer: json['commissionByContainer'] as bool?,
       containerQty: (json['containerQty'] as num?)?.toInt(),
-      lines: (json['lines'] as List<dynamic>?)
+      lines: (json['serviceLines'] as List<dynamic>?)
           ?.map((e) => ServiceLineShowDto.fromJson(e as Map<String, dynamic>))
           .toList(),
+      state: (json['state'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$ServiceShowMobileDtoToJson(
@@ -152,7 +153,8 @@ Map<String, dynamic> _$ServiceShowMobileDtoToJson(
       'journeyType': instance.journeyType,
       'commissionByContainer': instance.commissionByContainer,
       'containerQty': instance.containerQty,
-      'lines': instance.lines,
+      'serviceLines': instance.lines,
+      'state': instance.state,
     };
 
 ServiceLineShowDto _$ServiceLineShowDtoFromJson(Map<String, dynamic> json) =>
@@ -163,6 +165,8 @@ ServiceLineShowDto _$ServiceLineShowDtoFromJson(Map<String, dynamic> json) =>
       uomName: json['uomName'] as String?,
       quantity: (json['quantity'] as num?)?.toDouble(),
       guideNumbers: json['guideNumbers'] as String?,
+      canEdit: json['canEdit'] as bool?,
+      canEditWeight: json['canEditWeight'] as bool?,
     );
 
 Map<String, dynamic> _$ServiceLineShowDtoToJson(ServiceLineShowDto instance) =>
@@ -173,4 +177,58 @@ Map<String, dynamic> _$ServiceLineShowDtoToJson(ServiceLineShowDto instance) =>
       'uomName': instance.uomName,
       'quantity': instance.quantity,
       'guideNumbers': instance.guideNumbers,
+      'canEdit': instance.canEdit,
+      'canEditWeight': instance.canEditWeight,
+    };
+
+ServiceLineUpdateDto _$ServiceLineUpdateDtoFromJson(
+        Map<String, dynamic> json) =>
+    ServiceLineUpdateDto(
+      id: (json['id'] as num?)?.toInt(),
+      weightQuantity: (json['weightQuantity'] as num?)?.toDouble(),
+      quantity: (json['quantity'] as num?)?.toDouble(),
+      guideNumbers: json['guideNumbers'] as String?,
+    );
+
+Map<String, dynamic> _$ServiceLineUpdateDtoToJson(
+        ServiceLineUpdateDto instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'weightQuantity': instance.weightQuantity,
+      'quantity': instance.quantity,
+      'guideNumbers': instance.guideNumbers,
+    };
+
+ServiceFinishDto _$ServiceFinishDtoFromJson(Map<String, dynamic> json) =>
+    ServiceFinishDto(
+      serviceId: (json['serviceId'] as num?)?.toInt(),
+      truckId: (json['truckId'] as num?)?.toInt(),
+      finishLog: json['finishLog'] == null
+          ? null
+          : LogDto.fromJson(json['finishLog'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$ServiceFinishDtoToJson(ServiceFinishDto instance) =>
+    <String, dynamic>{
+      'serviceId': instance.serviceId,
+      'truckId': instance.truckId,
+      'finishLog': instance.finishLog,
+    };
+
+ServiceDestinyDoneDto _$ServiceDestinyDoneDtoFromJson(
+        Map<String, dynamic> json) =>
+    ServiceDestinyDoneDto(
+      serviceId: (json['serviceId'] as num?)?.toInt(),
+      truckId: (json['truckId'] as num?)?.toInt(),
+      destinyDoneLog: json['destinyDoneLog'] == null
+          ? null
+          : LogDto.fromJson(json['destinyDoneLog'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$ServiceDestinyDoneDtoToJson(
+        ServiceDestinyDoneDto instance) =>
+    <String, dynamic>{
+      'serviceId': instance.serviceId,
+      'truckId': instance.truckId,
+      'destinyDoneLog': instance.destinyDoneLog,
     };

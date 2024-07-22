@@ -16,7 +16,7 @@ class SectionService {
       "clientId": clientId,
       "originId": originId,
       "destinyId": destinyId,
-      "collectionMethod": collectionMethod,
+      "collectionMethodId": collectionMethod,
       "journeyTypeId": journeyTypeId
     });
     if (response.statusCode == 200) {

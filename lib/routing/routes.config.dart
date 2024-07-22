@@ -51,8 +51,8 @@ class AppMiddleware extends GetMiddleware {
     if (token == null && route != '/login') {
       return const RouteSettings(name: '/login');
     }
-    if (truck == null && route != '/trucks') {
-      return const RouteSettings(name: '/trucks');
+    if (truck == null && route != '/select-truck') {
+      return const RouteSettings(name: '/select-truck');
     }
     if (token!.isNotEmpty && route == '/login') {
       return const RouteSettings(name: '/');

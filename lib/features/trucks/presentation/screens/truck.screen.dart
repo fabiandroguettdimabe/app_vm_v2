@@ -105,6 +105,8 @@ class _TruckScreenState extends State<TruckScreen> {
                                         'truckId', result.id);
                                     await UserPreferences.set(
                                         'truckPatent', result.patent);
+                                    await UserPreferences.set(
+                                        'truckNumber', result.truckNumber);
                                     Get.offNamed('/');
                                   },
                                   builder:
