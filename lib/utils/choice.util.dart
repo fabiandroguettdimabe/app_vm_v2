@@ -1,4 +1,5 @@
 import 'package:app_vm/features/clients/domain/client.dto.dart';
+import 'package:app_vm/features/documents/domain/document.type.dto.dart';
 import 'package:app_vm/features/locations/domain/location.dto.dart';
 import 'package:app_vm/features/services/domain/collection.method.dto.dart';
 import 'package:app_vm/features/services/domain/journey.type.dto.dart';
@@ -67,6 +68,17 @@ choiceJourneyType(List<JourneyTypeDto>? journeyTypes) {
         (journeyType) => S2Choice(
           value: journeyType,
           title: journeyType.name ?? "",
+        ),
+      )
+      .toList();
+}
+
+choiceDocumentTypes(List<DocumentTypeDto>? documentTypes) {
+  return documentTypes
+      ?.map(
+        (documentType) => S2Choice(
+          value: documentType,
+          title: documentType.name ?? "",
         ),
       )
       .toList();

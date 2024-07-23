@@ -2,15 +2,21 @@ import 'dart:io';
 
 import 'package:app_vm/constants/constants.dart';
 import 'package:app_vm/constants/widgets/avatar.icon.title.widget.dart';
+import 'package:app_vm/features/documents/application/document.service.dart';
+import 'package:app_vm/features/documents/application/document.type.service.dart';
+import 'package:app_vm/features/documents/domain/document.dto.dart';
+import 'package:app_vm/features/documents/domain/document.type.dto.dart';
 import 'package:app_vm/features/services/application/dispatch.guide.service.dart';
 import 'package:app_vm/features/services/application/service.service.dart';
 import 'package:app_vm/features/services/domain/guide.number.dto.dart';
 import 'package:app_vm/features/services/domain/service.dto.dart';
 import 'package:app_vm/preferences/user.preferences.dart';
 import 'package:app_vm/theme/color.config.dart';
+import 'package:app_vm/utils/choice.util.dart';
 import 'package:app_vm/utils/log.util.dart';
 import 'package:async_builder/async_builder.dart';
 import 'package:async_button_builder/async_button_builder.dart';
+import 'package:easy_url_launcher/easy_url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_awesome_select_clone/flutter_awesome_select.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -23,6 +29,7 @@ import 'package:map_launcher/map_launcher.dart';
 import 'package:number_editing_controller/parsed_number_format/text_controller.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:path/path.dart' as path;
+import 'package:badges/badges.dart' as badges;
 
 import '../../../utils/map.util.dart';
 
@@ -451,51 +458,49 @@ class _ServiceScreenState extends State<ServiceScreen> {
                 child: const Text("Guías de despacho",
                     style: TextStyle(color: Colors.white)),
                 onPressed: () async {
-                  var guideNumbers =
-                      await DispatchGuideService.getGuidesByServiceLineId(
-                          line.id);
                   Get.bottomSheet(
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        children: [
-                          Card(
-                            elevation: 10,
-                            child: ListTile(
-                              leading: AvatarIconTitleWidget(
-                                  icon: FontAwesome.tags_solid),
-                              title: const Text("Guías de Despacho"),
-                            ),
+                      StatefulBuilder(builder: (context, setStateGuide) {
+                    return Wrap(
+                      alignment: WrapAlignment.center,
+                      children: [
+                        Card(
+                          elevation: 10,
+                          child: ListTile(
+                            leading: AvatarIconTitleWidget(
+                                icon: FontAwesome.tags_solid),
+                            title: const Text("Guías de Despacho"),
                           ),
-                          const Divider(),
-                          Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: AsyncButtonBuilder(
-                              child: const Text(
-                                "Agregar Guía",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onPressed: () async {
-                                showAddGuideNumber(context, line);
-                              },
-                              builder: (context, child, callback, buttonState) {
-                                return ElevatedButton.icon(
-                                  icon: const Icon(Icons.add,
-                                      color: Colors.white),
-                                  onPressed: callback,
-                                  label: child,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: primaryColorDark,
-                                    minimumSize: const Size.fromHeight(50),
-                                  ),
-                                );
-                              },
+                        ),
+                        const Divider(),
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: AsyncButtonBuilder(
+                            child: const Text(
+                              "Agregar Guía",
+                              style: TextStyle(color: Colors.white),
                             ),
+                            onPressed: () async {
+                              showAddGuideNumber(context, line, setStateGuide);
+                            },
+                            builder: (context, child, callback, buttonState) {
+                              return ElevatedButton.icon(
+                                icon:
+                                    const Icon(Icons.add, color: Colors.white),
+                                onPressed: callback,
+                                label: child,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: primaryColorDark,
+                                  minimumSize: const Size.fromHeight(50),
+                                ),
+                              );
+                            },
                           ),
-                          const Divider(),
-                          showGuideNumbers(context, guideNumbers),
-                        ],
-                      ),
-                      backgroundColor: Get.theme.dialogBackgroundColor);
+                        ),
+                        const Divider(),
+                        showGuideNumbers(context, line),
+                      ],
+                    );
+                  }), backgroundColor: Get.theme.dialogBackgroundColor);
                 },
                 builder: (context, child, callback, buttonState) {
                   return ElevatedButton.icon(
@@ -514,7 +519,52 @@ class _ServiceScreenState extends State<ServiceScreen> {
             Padding(
               padding: EdgeInsets.all(Adaptive.px(10)),
               child: AsyncButtonBuilder(
-                onPressed: () async {},
+                onPressed: () async {
+                  Get.bottomSheet(
+                      StatefulBuilder(builder: (context, setStateDocuments) {
+                    return Wrap(
+                      alignment: WrapAlignment.center,
+                      children: [
+                        Card(
+                          elevation: 10,
+                          child: ListTile(
+                            leading: AvatarIconTitleWidget(
+                                icon: FontAwesome.tags_solid),
+                            title: const Text("Documentos"),
+                          ),
+                        ),
+                        const Divider(),
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: AsyncButtonBuilder(
+                            child: const Text(
+                              "Agregar Documentos",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            onPressed: () async {
+                              showAddDocuments(
+                                  context, line, setStateDocuments);
+                            },
+                            builder: (context, child, callback, buttonState) {
+                              return ElevatedButton.icon(
+                                icon:
+                                    const Icon(Icons.add, color: Colors.white),
+                                onPressed: callback,
+                                label: child,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: primaryColorDark,
+                                  minimumSize: const Size.fromHeight(50),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const Divider(),
+                        showDocumentLine(context, line),
+                      ],
+                    );
+                  }), backgroundColor: Get.theme.dialogBackgroundColor);
+                },
                 builder: (context, child, callback, buttonState) {
                   return ElevatedButton.icon(
                     onPressed: callback,
@@ -657,63 +707,75 @@ class _ServiceScreenState extends State<ServiceScreen> {
     );
   }
 
-  showGuideNumbers(BuildContext context, List<GuideNumberDto>? guideNumbers) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: guideNumbers!.length,
-      itemBuilder: (context, index) {
-        final guide = guideNumbers[index];
-        return ListTile(
-          leading: AvatarIconTitleWidget(icon: FontAwesome.tags_solid),
-          title: Text("Guía de Despacho ${index + 1}"),
-          subtitle: Text(guide.guideNumber ?? "Sin definir"),
-          onTap: () {
-            showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return Wrap(
-                  children: [
-                    ListTile(
-                      leading:
-                          AvatarIconTitleWidget(icon: FontAwesome.tags_solid),
-                      title: const Text("Guía de Despacho"),
-                      subtitle: Text(guide.guideNumber ?? "Sin definir"),
-                    ),
-                    const Divider(),
-                    ListTile(
-                      leading: AvatarIconTitleWidget(
-                          icon: FontAwesome.file_pdf_solid),
-                      title: const Text("Documento"),
-                      subtitle: Text(guide.documentUrl ?? "Sin definir"),
-                    ),
-                    const Divider(),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.center,
+  showGuideNumbers(BuildContext context, ServiceLineShowDto? line) {
+    return AsyncBuilder(
+      future: DispatchGuideService.getGuidesByServiceLineId(line?.id),
+      waiting: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      builder: (context, guideNumbers) {
+        return ListView.builder(
+          shrinkWrap: true,
+          itemCount: guideNumbers!.length,
+          itemBuilder: (context, index) {
+            final guide = guideNumbers[index];
+            return ListTile(
+              leading: AvatarIconTitleWidget(icon: FontAwesome.tags_solid),
+              title: Text("Guía de Despacho ${index + 1}"),
+              subtitle: Text(guide.guideNumber ?? "Sin definir"),
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Wrap(
                       children: [
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          icon: const Icon(Icons.close, color: Colors.white),
-                          label: const Text("Cerrar",
-                              style: TextStyle(color: Colors.white)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: errorColorDark,
-                          ),
+                        ListTile(
+                          leading: AvatarIconTitleWidget(
+                              icon: FontAwesome.tags_solid),
+                          title: const Text("Guía de Despacho"),
+                          subtitle: Text(guide.guideNumber ?? "Sin definir"),
                         ),
-                        ElevatedButton.icon(
-                          onPressed: () async {},
-                          icon: const Icon(Icons.open_in_browser,
-                              color: Colors.white),
-                          label: const Text("Abrir",
-                              style: TextStyle(color: Colors.white)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: successColor,
-                          ),
+                        const Divider(),
+                        ListTile(
+                          leading: AvatarIconTitleWidget(
+                              icon: FontAwesome.file_pdf_solid),
+                          title: const Text("Documento"),
+                          subtitle: Text(guide.id.toString() ?? "Sin definir"),
+                        ),
+                        const Divider(),
+                        ButtonBar(
+                          alignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              icon:
+                                  const Icon(Icons.close, color: Colors.white),
+                              label: const Text("Cerrar",
+                                  style: TextStyle(color: Colors.white)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: errorColorDark,
+                              ),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                await EasyLauncher.url(
+                                    url: guide.getDocumentUrl!);
+                              },
+                              icon: const Icon(Icons.open_in_browser,
+                                  color: Colors.white),
+                              label: const Text("Abrir",
+                                  style: TextStyle(color: Colors.white)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: successColor,
+                              ),
+                            )
+                          ],
                         )
                       ],
-                    )
-                  ],
+                    );
+                  },
                 );
               },
             );
@@ -723,7 +785,11 @@ class _ServiceScreenState extends State<ServiceScreen> {
     );
   }
 
-  showAddGuideNumber(BuildContext context, ServiceLineShowDto? line) {
+  showAddGuideNumber(
+    BuildContext context,
+    ServiceLineShowDto? line,
+    StateSetter setStateGuide,
+  ) {
     var guideNumberController = TextEditingController();
     var cameraFiles = <File>[];
     var explorerFiles = <File>[];
@@ -733,7 +799,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
       useSafeArea: true,
       context: context,
       builder: (context) {
-        return StatefulBuilder(builder: (context, setStateClient) {
+        return StatefulBuilder(builder: (context, setStateFiles) {
           return Padding(
             padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -781,20 +847,31 @@ class _ServiceScreenState extends State<ServiceScreen> {
                               file: result,
                               name: 'GD_${guideNumberController.text}');
                           if (file != null) {
-                            cameraFiles.add(file);
+                            setStateFiles(() {
+                              cameraFiles.add(file);
+                            });
                           }
                         },
                         builder: (context, child, callback, buttonState) {
-                          return ElevatedButton.icon(
-                            onPressed: callback,
-                            label: child,
-                            icon: Icon(
-                              Mdi.cameraPlus,
-                              color: Get.iconColor,
+                          return badges.Badge(
+                            badgeContent: Text(
+                              cameraFiles.length.toString(),
+                              style: Get.theme.textTheme.titleSmall,
                             ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: primaryColorDark,
-                              minimumSize: const Size.fromHeight(50),
+                            badgeStyle: badges.BadgeStyle(
+                              badgeColor: secondaryColorDark,
+                            ),
+                            child: ElevatedButton.icon(
+                              onPressed: callback,
+                              label: child,
+                              icon: Icon(
+                                Mdi.cameraPlus,
+                                color: Get.iconColor,
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColorDark,
+                                minimumSize: const Size.fromHeight(50),
+                              ),
                             ),
                           );
                         },
@@ -814,20 +891,31 @@ class _ServiceScreenState extends State<ServiceScreen> {
                               file: result,
                               name: 'GD_${guideNumberController.text}');
                           if (file != null) {
-                            explorerFiles.add(file);
+                            setStateFiles(() {
+                              explorerFiles.add(file);
+                            });
                           }
                         },
                         builder: (context, child, callback, buttonState) {
-                          return ElevatedButton.icon(
-                            onPressed: callback,
-                            label: child,
-                            icon: Icon(
-                              Mdi.fileImagePlus,
-                              color: Get.iconColor,
+                          return badges.Badge(
+                            badgeContent: Text(
+                              explorerFiles.length.toString(),
+                              style: Get.theme.textTheme.titleSmall,
                             ),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: primaryColorDark,
-                              minimumSize: const Size.fromHeight(50),
+                            badgeStyle: badges.BadgeStyle(
+                              badgeColor: secondaryColorDark,
+                            ),
+                            child: ElevatedButton.icon(
+                              onPressed: callback,
+                              label: child,
+                              icon: Icon(
+                                Mdi.fileImagePlus,
+                                color: Get.iconColor,
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColorDark,
+                                minimumSize: const Size.fromHeight(50),
+                              ),
                             ),
                           );
                         },
@@ -859,7 +947,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
                                 serviceLineId: line?.id);
                             await DispatchGuideService.createGuideNumber(
                                 create, files);
-                            setState(() {});
+                            Get.back();
+                            setStateGuide(() {});
                           },
                           builder: (context, child, callback, buttonState) {
                             return ElevatedButton.icon(
@@ -884,38 +973,232 @@ class _ServiceScreenState extends State<ServiceScreen> {
     );
   }
 
-  Future<File?> pickImage(ImageSource source) async {
-    var image = await ImagePicker().pickImage(source: source);
-    if (image == null) return null;
-    final imageTmp = File(image.path);
-
-    return imageTmp;
+  showAddDocuments(
+    BuildContext context,
+    ServiceLineShowDto? line,
+    StateSetter setStateDocuments,
+  ) {
+    var guideNumberController = TextEditingController();
+    var cameraFiles = <File>[];
+    var explorerFiles = <File>[];
+    DocumentTypeDto? documentTypeSelected;
+    showModalBottomSheet(
+      isScrollControlled: true,
+      isDismissible: true,
+      useSafeArea: true,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setStateFiles) {
+          return Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: SafeArea(
+              child: Form(
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  children: [
+                    Card(
+                      elevation: 5,
+                      margin: EdgeInsets.all(
+                        Adaptive.px(10),
+                      ),
+                      child: ListTile(
+                        trailing:
+                            AvatarIconTitleWidget(icon: Icons.edit_outlined),
+                        title: const Text("Agregar Documentos"),
+                        dense: true,
+                      ),
+                    ),
+                    const Divider(),
+                    selectDocumentTypes(
+                        context: context,
+                        onDtoChanged: (newDto) {
+                          documentTypeSelected = newDto;
+                        },
+                        dto: documentTypeSelected),
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: AsyncButtonBuilder(
+                        child: Text(
+                          "Adjuntar desde la cámara",
+                          style: Get.theme.textTheme.titleSmall,
+                        ),
+                        onPressed: () async {
+                          var result = await pickImage(ImageSource.camera);
+                          if (result == null) return;
+                          var file = await processFile(
+                              file: result,
+                              name: path.basename(result.path));
+                          if (file != null) {
+                            setStateFiles(() {
+                              cameraFiles.add(file);
+                            });
+                          }
+                        },
+                        builder: (context, child, callback, buttonState) {
+                          return badges.Badge(
+                            badgeContent: Text(
+                              cameraFiles.length.toString(),
+                              style: Get.theme.textTheme.titleSmall,
+                            ),
+                            badgeStyle: badges.BadgeStyle(
+                              badgeColor: secondaryColorDark,
+                            ),
+                            child: ElevatedButton.icon(
+                              onPressed: callback,
+                              label: child,
+                              icon: Icon(
+                                Mdi.cameraPlus,
+                                color: Get.iconColor,
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColorDark,
+                                minimumSize: const Size.fromHeight(50),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: AsyncButtonBuilder(
+                        child: Text(
+                          "Adjuntar desde los archivos",
+                          style: Get.theme.textTheme.titleSmall,
+                        ),
+                        onPressed: () async {
+                          var result = await pickImage(ImageSource.gallery);
+                          if (result == null) return;
+                          var file = await processFile(
+                              file: result,
+                              name: path.basename(result.path));
+                          if (file != null) {
+                            setStateFiles(() {
+                              explorerFiles.add(file);
+                            });
+                          }
+                        },
+                        builder: (context, child, callback, buttonState) {
+                          return badges.Badge(
+                            badgeContent: Text(
+                              explorerFiles.length.toString(),
+                              style: Get.theme.textTheme.titleSmall,
+                            ),
+                            badgeStyle: badges.BadgeStyle(
+                              badgeColor: secondaryColorDark,
+                            ),
+                            child: ElevatedButton.icon(
+                              onPressed: callback,
+                              label: child,
+                              icon: Icon(
+                                Mdi.fileImagePlus,
+                                color: Get.iconColor,
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: primaryColorDark,
+                                minimumSize: const Size.fromHeight(50),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    ButtonBar(
+                      alignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          icon: const Icon(Icons.close, color: Colors.white),
+                          label: const Text("Cancelar",
+                              style: TextStyle(color: Colors.white)),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: errorColorDark,
+                          ),
+                        ),
+                        AsyncButtonBuilder(
+                          child: const Text(
+                            "Guardar",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () async {
+                            var files = cameraFiles + explorerFiles;
+                            var create = DocumentUploadCreateDto(
+                              documentType: documentTypeSelected,
+                              serviceLineId: line?.id,
+                            );
+                            await DocumentService.uploadCreate(create, files);
+                            Get.back();
+                            setStateDocuments(() {});
+                          },
+                          builder: (context, child, callback, buttonState) {
+                            return ElevatedButton.icon(
+                                onPressed: callback,
+                                icon:
+                                    const Icon(Icons.save, color: Colors.white),
+                                label: child,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: successColor,
+                                ));
+                          },
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+      },
+    );
   }
 
-  Future<File?> processFile(
-      {File? file, String name = '', String? eventReason = ''}) async {
-    if (file == null) return null;
-    if (eventReason == null) {
-      name = "Evidencia";
-    }
-    if (name == '') {
-      name = DateTime.now().toString();
-    }
-    String dir = path.dirname(file.path);
-    String extension = path.extension(file.path);
-    String newPath = path.join(dir, "$name$extension");
-
-    File? newFile;
-    if (['.jpg', '.jpeg', '.png'].contains(extension)) {
-      var compressFile = await FlutterImageCompress.compressAndGetFile(
-          file.absolute.path, newPath,
-          quality: 60);
-      newFile = File(compressFile!.path);
-    } else {
-      newFile = file;
-    }
-
-    return File(newFile.path);
+  Widget selectDocumentTypes(
+      {BuildContext? context,
+      DocumentTypeDto? dto,
+      required Function(DocumentTypeDto?) onDtoChanged}) {
+    return AsyncBuilder(
+        future: DocumentTypeService.getDocumentTypes(),
+        waiting: (context) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+        builder: (context, list) {
+          return SmartSelect.single(
+            selectedValue: dto,
+            choiceItems: choiceDocumentTypes(list),
+            modalHeaderStyle: S2ModalHeaderStyle(
+              centerTitle: true,
+              textStyle: Get.theme.textTheme.titleSmall,
+              actionsIconTheme: Get.theme.iconTheme,
+              iconTheme: Get.theme.iconTheme,
+            ),
+            tileBuilder: (context, state) {
+              return ListTile(
+                leading: AvatarIconTitleWidget(icon: Mdi.file),
+                title: dto != null
+                    ? Text("Tipo de documento : ${dto!.name}")
+                    : const Text("Tipo de documentos",
+                        textAlign: TextAlign.start),
+                dense: true,
+                onTap: state.showModal,
+                trailing: AvatarIconTitleWidget(icon: Icons.arrow_forward),
+              );
+            },
+            title: "Seleccione un tipo de documento",
+            modalFilter: true,
+            modalFilterAuto: true,
+            modalFilterHint: "Buscar",
+            modalConfig: const S2ModalConfig(
+              type: S2ModalType.bottomSheet,
+            ),
+            onChange: (value) async {
+              onDtoChanged(value.value);
+            },
+          );
+        });
   }
 
   showFinishBottomSheet(
@@ -998,5 +1281,65 @@ class _ServiceScreenState extends State<ServiceScreen> {
           ],
         ),
         backgroundColor: Get.theme.dialogBackgroundColor);
+  }
+
+  showDocumentLine(BuildContext context, ServiceLineShowDto dto) {
+    return AsyncBuilder(
+      future: DocumentService.getDocuments(dto.id),
+      waiting: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      builder: (context, value) {
+        return ListView.builder(
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            var document = value![index];
+            return ListTile(
+              leading: AvatarIconTitleWidget(icon: FontAwesome.file_pdf_solid),
+              title: Text(document.name ?? "Sin definir"),
+              subtitle: Text(document.id.toString()),
+              onTap: () async {
+                await EasyLauncher.url(url: document.getDocumentUrl!);
+              },
+            );
+          },
+          itemCount: value!.length,
+        );
+      },
+    );
+  }
+
+  Future<File?> pickImage(ImageSource source) async {
+    var image = await ImagePicker().pickImage(source: source);
+    if (image == null) return null;
+    final imageTmp = File(image.path);
+
+    return imageTmp;
+  }
+
+  Future<File?> processFile(
+      {File? file, String name = '', String? eventReason = ''}) async {
+    if (file == null) return null;
+    if (eventReason == null) {
+      name = "Evidencia";
+    }
+    if (name == '') {
+      name = DateTime.now().toString();
+    }
+    String dir = path.dirname(file.path);
+    String extension = path.extension(file.path);
+    String newPath = path.join(dir, "$name$extension");
+
+    File? newFile;
+    if (['.jpg', '.jpeg', '.png'].contains(extension)) {
+      var compressFile = await FlutterImageCompress.compressAndGetFile(
+          file.absolute.path, newPath,
+          quality: 60);
+      newFile = File(compressFile!.path);
+    } else {
+      newFile = file;
+    }
+
+    return File(newFile.path);
   }
 }

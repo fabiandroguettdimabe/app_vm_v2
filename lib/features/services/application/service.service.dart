@@ -26,6 +26,24 @@ class ServiceService {
     }
   }
 
+  static Future<List<ServiceConfirmedDto>?> getServicesConfirmed() async {
+    try {
+      var response = await DioUtil.dio.get(endpointServiceConfirmed);
+      if (response.statusCode != 200) return [];
+      var apiResponse = ResponseListDto.fromJson(response.data);
+      if (apiResponse.statusCode != 200) return [];
+      return apiResponse.data!
+          .map((e) => ServiceConfirmedDto.fromJson(e!))
+          .toList();
+    } on DioException catch (e) {
+      var errorResponse = ResponseDto.fromJson(e.response?.data);
+      if (errorResponse.statusCode == 404) {
+        return [];
+      }
+      return null;
+    }
+  }
+
   static Future<ServiceShowMobileDto?> getService(int id) async {
     var response = await DioUtil.dio
         .get(endpointServiceShow, queryParameters: {'serviceId': id});
@@ -52,6 +70,24 @@ class ServiceService {
     if (!apiResponse.data!.containsKey('quantity')) return 0;
     if (apiResponse.statusCode != 200) return null;
     return apiResponse.data!['quantity'] as int ?? 0;
+  }
+
+  static Future<void> startService(int? serviceId, ServiceStartDto dto) async {
+    try {
+      var response = await DioUtil.dio.put(endpointServiceStart,
+          queryParameters: {'serviceId': serviceId}, data: dto.toJson());
+      if (response.statusCode != 200) return;
+      var apiResponse = ResponseDto.fromJson(response.data);
+      if (apiResponse.statusCode != 200) return;
+      var serviceStartedId = apiResponse.data!['serviceId'] as int;
+      Get.offNamed('/service', arguments: {'id': serviceStartedId});
+    } on DioException catch (e) {
+      var errorResponse = ResponseDto.fromJson(e.response?.data);
+      if (errorResponse.statusCode == 400) {
+        Get.snackbar('Error', errorResponse.message!);
+      }
+    }
+    return null;
   }
 
   static Future<void> finishService(ServiceFinishDto dto) async {
@@ -85,6 +121,8 @@ class ServiceService {
       }
     }
   }
+
+
 
   // Services Lines
   static Future<void> updateServiceLine(ServiceLineUpdateDto model) async {

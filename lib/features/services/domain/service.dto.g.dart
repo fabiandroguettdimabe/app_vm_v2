@@ -232,3 +232,50 @@ Map<String, dynamic> _$ServiceDestinyDoneDtoToJson(
       'truckId': instance.truckId,
       'destinyDoneLog': instance.destinyDoneLog,
     };
+
+ServiceConfirmedDto _$ServiceConfirmedDtoFromJson(Map<String, dynamic> json) =>
+    ServiceConfirmedDto(
+      id: (json['id'] as num?)?.toInt(),
+      description: json['sectionDescription'] as String?,
+      client: json['client'] == null
+          ? null
+          : ClientDto.fromJson(json['client'] as Map<String, dynamic>),
+      originLocation: json['origin'] == null
+          ? null
+          : LocationShowDto.fromJson(json['origin'] as Map<String, dynamic>),
+      destinyLocation: json['destiny'] == null
+          ? null
+          : LocationShowDto.fromJson(json['destiny'] as Map<String, dynamic>),
+      collectionMethod: json['collectionMethod'] == null
+          ? null
+          : CollectionMethodDto.fromJson(
+              json['collectionMethod'] as Map<String, dynamic>),
+      journeyType: json['journeyType'] == null
+          ? null
+          : CollectionMethodDto.fromJson(
+              json['journeyType'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$ServiceConfirmedDtoToJson(
+        ServiceConfirmedDto instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'sectionDescription': instance.description,
+      'client': instance.client,
+      'origin': instance.originLocation,
+      'destiny': instance.destinyLocation,
+      'collectionMethod': instance.collectionMethod,
+      'journeyType': instance.journeyType,
+    };
+
+ServiceStartDto _$ServiceStartDtoFromJson(Map<String, dynamic> json) =>
+    ServiceStartDto(
+      startLog: json['startLog'] == null
+          ? null
+          : LogDto.fromJson(json['startLog'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$ServiceStartDtoToJson(ServiceStartDto instance) =>
+    <String, dynamic>{
+      'startLog': instance.startLog,
+    };

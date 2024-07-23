@@ -348,6 +348,11 @@ class _NewServiceScreenState extends State<NewServiceScreen> {
                   collectionMethodSelected?.id, journeyTypeSelected?.id);
               setState(() {
                 operationSelected = value.value;
+                originSelected = null;
+                destinySelected = null;
+                collectionMethodSelected = null;
+                journeyTypeSelected = null;
+                clientSelected = null;
               });
             },
           );
@@ -391,6 +396,10 @@ class _NewServiceScreenState extends State<NewServiceScreen> {
             collectionMethodSelected?.id, journeyTypeSelected?.id);
         setState(() {
           clientSelected = value.value;
+          originSelected = null;
+          destinySelected = null;
+          collectionMethodSelected = null;
+          journeyTypeSelected = null;
         });
       },
     );
@@ -515,6 +524,7 @@ class _NewServiceScreenState extends State<NewServiceScreen> {
             journeyTypeSelected?.id);
         setState(() {
           collectionMethodSelected = value.value;
+          journeyTypeSelected = null;
         });
       },
     );

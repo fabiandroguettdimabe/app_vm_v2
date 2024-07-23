@@ -206,3 +206,44 @@ class ServiceDestinyDoneDto {
 
   Map<String, dynamic> toJson() => _$ServiceDestinyDoneDtoToJson(this);
 }
+
+@JsonSerializable()
+class ServiceConfirmedDto {
+  int? id;
+  @JsonKey(name: 'sectionDescription')
+  String? description;
+  ClientDto? client;
+  @JsonKey(name: 'origin')
+  LocationShowDto? originLocation;
+  @JsonKey(name: 'destiny')
+  LocationShowDto? destinyLocation;
+  CollectionMethodDto? collectionMethod;
+  CollectionMethodDto? journeyType;
+
+  ServiceConfirmedDto(
+      {this.id,
+      this.description,
+      this.client,
+      this.originLocation,
+      this.destinyLocation,
+      this.collectionMethod,
+      this.journeyType});
+
+  factory ServiceConfirmedDto.fromJson(Map<String, dynamic> json) =>
+      _$ServiceConfirmedDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServiceConfirmedDtoToJson(this);
+
+}
+
+@JsonSerializable()
+class ServiceStartDto {
+  LogDto? startLog;
+
+  ServiceStartDto({this.startLog});
+
+  factory ServiceStartDto.fromJson(Map<String, dynamic> json) =>
+      _$ServiceStartDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServiceStartDtoToJson(this);
+}

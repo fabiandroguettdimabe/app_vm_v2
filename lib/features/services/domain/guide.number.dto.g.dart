@@ -10,8 +10,7 @@ GuideNumberDto _$GuideNumberDtoFromJson(Map<String, dynamic> json) =>
     GuideNumberDto(
       id: (json['id'] as num?)?.toInt(),
       guideNumber: json['guideNumber'] as String?,
-      documentUrl: json['documentUrl'] as String?,
-    );
+    )..documentUrl = json['documentUrl'] as String?;
 
 Map<String, dynamic> _$GuideNumberDtoToJson(GuideNumberDto instance) =>
     <String, dynamic>{

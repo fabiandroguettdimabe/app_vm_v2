@@ -10,6 +10,7 @@ import 'package:app_vm/features/trucks/domain/truck.dto.dart';
 import 'package:app_vm/preferences/user.preferences.dart';
 import 'package:app_vm/theme/color.config.dart';
 import 'package:app_vm/utils/choice.util.dart';
+import 'package:async_builder/async_builder.dart';
 import 'package:async_button_builder/async_button_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_awesome_select_clone/flutter_awesome_select.dart';
@@ -30,12 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
   OperationDto? operationSelected;
   ClientDto? clientSelected;
   int? qtyServiceInProcess;
-  List<ServiceInProcessDto>? serviceInProcess = [];
 
   @override
   void initState() {
     loadSelection();
-    loadQtyServiceInProcess();
     super.initState();
   }
 
@@ -105,32 +104,50 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+          AsyncBuilder(
+              future: ServiceService.getQtyServiceInProcess(),
+              waiting: (context) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+              builder: (context, value) {
+                return Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: AsyncButtonBuilder(
+                    child: ListTile(
+                      leading: const Icon(Mdi.truckFast, color: Colors.white),
+                      title: const Text("Viajes en proceso",
+                          style: TextStyle(color: Colors.white)),
+                      trailing: Text(
+                        value?.toString() ?? "",
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onPressed: () async {
+                      var serviceInProcess =
+                          await ServiceService.getServicesInProcess();
+                      Get.bottomSheet(
+                          buildBottomSheetServiceInProcess(serviceInProcess),
+                          backgroundColor: Get.theme.dialogBackgroundColor);
+                    },
+                    builder: (context, child, callback, buttonState) {
+                      return ElevatedButton(
+                        onPressed: callback,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColorDark,
+                          minimumSize: const Size.fromHeight(50),
+                        ),
+                        child: child,
+                      );
+                    },
+                  ),
+                );
+              }),
           Padding(
             padding: const EdgeInsets.all(15),
             child: ElevatedButton(
-              onPressed: () {
-                Get.bottomSheet(buildBottomSheetServiceInProcess(),
-                    backgroundColor: Get.theme.dialogBackgroundColor);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColorDark,
-                minimumSize: const Size.fromHeight(50),
-              ),
-              child: ListTile(
-                leading: const Icon(Mdi.truckFast, color: Colors.white),
-                title: const Text("Viajes en proceso",
-                    style: TextStyle(color: Colors.white)),
-                trailing: Text(
-                  qtyServiceInProcess?.toString() ?? "",
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.toNamed('/services-confirmed');
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColorDark,
                   minimumSize: const Size.fromHeight(50),
@@ -187,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var truckPatent = UserPreferences().getStringSync('truckPatent');
     var truckNumber = UserPreferences().getStringSync('truckNumber');
     var currentTruck =
-    TruckDto(id: truckId, patent: truckPatent, truckNumber: truckNumber);
+        TruckDto(id: truckId, patent: truckPatent, truckNumber: truckNumber);
     // Load current operation
     var operationId = UserPreferences().getIntSync('operationId');
     var operationName = UserPreferences().getStringSync('operationName');
@@ -202,15 +219,6 @@ class _HomeScreenState extends State<HomeScreen> {
       truckSelected = currentTruck;
       operationSelected = currentOperation;
       clientSelected = currentClient;
-    });
-  }
-
-  loadQtyServiceInProcess() async {
-    var qty = await ServiceService.getQtyServiceInProcess();
-    var services = await ServiceService.getServicesInProcess();
-    setState(() {
-      qtyServiceInProcess = qty;
-      serviceInProcess = services;
     });
   }
 
@@ -295,7 +303,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget buildBottomSheetServiceInProcess() {
+  Widget buildBottomSheetServiceInProcess(
+      List<ServiceInProcessDto>? serviceInProcess) {
     return Wrap(
       children: [
         ListTile(

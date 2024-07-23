@@ -1,12 +1,12 @@
 import 'package:app_vm/features/auth/presentation/login.screen.dart';
 import 'package:app_vm/features/home/presentation/home.screen.dart';
 import 'package:app_vm/features/services/presentation/new.service.screen.dart';
+import 'package:app_vm/features/services/presentation/service.confirm.screen.dart';
 import 'package:app_vm/features/services/presentation/service.screen.dart';
 import 'package:app_vm/features/trucks/presentation/screens/truck.screen.dart';
 import 'package:app_vm/preferences/user.preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 appRoutes() => [
@@ -30,6 +30,11 @@ appRoutes() => [
           name: '/service',
           page: () => const ServiceScreen(),
           middlewares: [AppMiddleware()]),
+      GetPage(
+        name: '/services-confirmed',
+        page: () => const ServiceConfirmScreen(),
+        middlewares: [AppMiddleware()],
+      )
     ];
 
 class AppMiddleware extends GetMiddleware {

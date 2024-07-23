@@ -1,3 +1,5 @@
+import 'package:app_vm/constants/constants.dart';
+import 'package:app_vm/constants/endpoint.data.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'guide.number.dto.g.dart';
@@ -11,8 +13,11 @@ class GuideNumberDto {
   GuideNumberDto({
     this.id,
     this.guideNumber,
-    this.documentUrl,
   });
+
+  String? get getDocumentUrl {
+    return baseUrl + endpointDispatchGuideShow + id.toString() ;
+  }
 
   factory GuideNumberDto.fromJson(Map<String, dynamic> json) =>
       _$GuideNumberDtoFromJson(json);
