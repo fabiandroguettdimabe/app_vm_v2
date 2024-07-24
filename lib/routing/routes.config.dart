@@ -2,7 +2,9 @@ import 'package:app_vm/features/auth/presentation/login.screen.dart';
 import 'package:app_vm/features/home/presentation/home.screen.dart';
 import 'package:app_vm/features/services/presentation/new.service.screen.dart';
 import 'package:app_vm/features/services/presentation/service.confirm.screen.dart';
+import 'package:app_vm/features/services/presentation/service.done.screen.dart';
 import 'package:app_vm/features/services/presentation/service.screen.dart';
+import 'package:app_vm/features/services/presentation/service.to_relieved.screen.dart';
 import 'package:app_vm/features/trucks/presentation/screens/truck.screen.dart';
 import 'package:app_vm/preferences/user.preferences.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +35,16 @@ appRoutes() => [
       GetPage(
         name: '/services-confirmed',
         page: () => const ServiceConfirmScreen(),
+        middlewares: [AppMiddleware()],
+      ),
+      GetPage(
+        name: '/services-relieved',
+        page: () => const ServiceToRelievedScreen(),
+        middlewares: [AppMiddleware()],
+      ),
+      GetPage(
+        name: '/service-done',
+        page: () => const ServiceDoneScreen(),
         middlewares: [AppMiddleware()],
       )
     ];

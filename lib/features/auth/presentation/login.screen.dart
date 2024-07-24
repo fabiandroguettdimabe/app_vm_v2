@@ -127,9 +127,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             var result = await AuthService.login(loginData);
                             if (result) {
                               Get.offNamed('/select-truck');
-                            } else {
-                              Get.snackbar(
-                                  'Error', 'Usuario o contraseña incorrectos');
                             }
                           },
                           builder: (context, child, callback, buttonState) {
@@ -167,7 +164,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                     true,
                                     ScanMode.BARCODE);
                             bool result = await AuthService.loginQR(barcode);
-                            Get.offNamed("/");
+                            if (result) {
+                              Get.offNamed('/select-truck');
+                            }
+
                           },
                           builder: (context, child, callback, buttonState) {
                             var buttonColor = buttonState.when(

@@ -1,5 +1,7 @@
+import 'package:app_vm/constants/dto/type.event.dto.dart';
 import 'package:app_vm/features/clients/domain/client.dto.dart';
 import 'package:app_vm/features/documents/domain/document.type.dto.dart';
+import 'package:app_vm/features/event_reasons/domain/event.reason.dto.dart';
 import 'package:app_vm/features/locations/domain/location.dto.dart';
 import 'package:app_vm/features/services/domain/collection.method.dto.dart';
 import 'package:app_vm/features/services/domain/journey.type.dto.dart';
@@ -79,6 +81,28 @@ choiceDocumentTypes(List<DocumentTypeDto>? documentTypes) {
         (documentType) => S2Choice(
           value: documentType,
           title: documentType.name ?? "",
+        ),
+      )
+      .toList();
+}
+
+choiceEventReasons(List<EventReasonDto>? eventReasons) {
+  return eventReasons
+      ?.map(
+        (eventReason) => S2Choice(
+          value: eventReason,
+          title: eventReason.name ?? "",
+        ),
+      )
+      .toList();
+}
+
+choiceTypeEvents(List<TypeEventDto>? typeEvents) {
+  return typeEvents
+      ?.map(
+        (typeEvent) => S2Choice(
+          value: typeEvent,
+          title: typeEvent.name ?? "",
         ),
       )
       .toList();

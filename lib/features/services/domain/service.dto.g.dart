@@ -279,3 +279,93 @@ Map<String, dynamic> _$ServiceStartDtoToJson(ServiceStartDto instance) =>
     <String, dynamic>{
       'startLog': instance.startLog,
     };
+
+ServiceFinishedDto _$ServiceFinishedDtoFromJson(Map<String, dynamic> json) =>
+    ServiceFinishedDto(
+      id: (json['id'] as num?)?.toInt(),
+      description: json['description'] as String?,
+      clientName: json['clientName'] as String?,
+      finishDate: json['finishDate'] == null
+          ? null
+          : DateTime.parse(json['finishDate'] as String),
+      collectionMethodName: json['collectionMethodName'] as String?,
+      journeyTypeName: json['journeyTypeName'] as String?,
+    );
+
+Map<String, dynamic> _$ServiceFinishedDtoToJson(ServiceFinishedDto instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'description': instance.description,
+      'clientName': instance.clientName,
+      'finishDate': instance.finishDate?.toIso8601String(),
+      'collectionMethodName': instance.collectionMethodName,
+      'journeyTypeName': instance.journeyTypeName,
+    };
+
+ServiceCancelDto _$ServiceCancelDtoFromJson(Map<String, dynamic> json) =>
+    ServiceCancelDto(
+      reasonId: (json['reasonId'] as num?)?.toInt(),
+      cancelLog: json['logMobile'] == null
+          ? null
+          : LogDto.fromJson(json['logMobile'] as Map<String, dynamic>),
+      reason: json['reason'] as String?,
+    );
+
+Map<String, dynamic> _$ServiceCancelDtoToJson(ServiceCancelDto instance) =>
+    <String, dynamic>{
+      'reasonId': instance.reasonId,
+      'logMobile': instance.cancelLog,
+      'reason': instance.reason,
+    };
+
+ServiceReleaseDto _$ServiceReleaseDtoFromJson(Map<String, dynamic> json) =>
+    ServiceReleaseDto(
+      eventReasonId: (json['eventReasonId'] as num?)?.toInt(),
+      releaseLog: json['logMobile'] == null
+          ? null
+          : LogDto.fromJson(json['logMobile'] as Map<String, dynamic>),
+      observation: json['observation'] as String?,
+    );
+
+Map<String, dynamic> _$ServiceReleaseDtoToJson(ServiceReleaseDto instance) =>
+    <String, dynamic>{
+      'eventReasonId': instance.eventReasonId,
+      'logMobile': instance.releaseLog,
+      'observation': instance.observation,
+    };
+
+ServiceRelievedDto _$ServiceRelievedDtoFromJson(Map<String, dynamic> json) =>
+    ServiceRelievedDto(
+      id: (json['id'] as num?)?.toInt(),
+      description: json['sectionDescription'] as String?,
+      client: json['client'] == null
+          ? null
+          : ClientDto.fromJson(json['client'] as Map<String, dynamic>),
+      originLocation: json['origin'] == null
+          ? null
+          : LocationShowDto.fromJson(json['origin'] as Map<String, dynamic>),
+      destinyLocation: json['destiny'] == null
+          ? null
+          : LocationShowDto.fromJson(json['destiny'] as Map<String, dynamic>),
+      collectionMethod: json['collectionMethod'] == null
+          ? null
+          : CollectionMethodDto.fromJson(
+              json['collectionMethod'] as Map<String, dynamic>),
+      journeyType: json['journeyType'] == null
+          ? null
+          : CollectionMethodDto.fromJson(
+              json['journeyType'] as Map<String, dynamic>),
+      relievedBy: json['relievedBy'] as String?,
+    );
+
+Map<String, dynamic> _$ServiceRelievedDtoToJson(ServiceRelievedDto instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'sectionDescription': instance.description,
+      'client': instance.client,
+      'origin': instance.originLocation,
+      'destiny': instance.destinyLocation,
+      'collectionMethod': instance.collectionMethod,
+      'journeyType': instance.journeyType,
+      'relievedBy': instance.relievedBy,
+    };

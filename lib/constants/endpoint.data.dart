@@ -63,3 +63,15 @@ const endpointDocuments = '/mobile/documents/getAllByServiceLineId';
 
 // Documents - Upload
 const endpointDocumentsUpload = '/mobile/documents/upload';
+
+// Event Reason - Get All
+const endpointEventReasons = '/mobile/eventReasons/all';
+
+// Service Finished
+const endpointServiceFinished = '/mobile/services/finishedService';
+
+// Service - Cancel Service Line
+const endpointServiceCancel = '/mobile/services/cancelService';
+
+// Service - Release Service
+const endpointServiceRelease = '/mobile/services/releaseService';

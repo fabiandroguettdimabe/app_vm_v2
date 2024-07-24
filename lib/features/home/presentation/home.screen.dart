@@ -163,7 +163,9 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.all(15),
             child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.toNamed('/services-relieved');
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColorDark,
                   minimumSize: const Size.fromHeight(50),
@@ -179,7 +181,9 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.all(15),
             child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.toNamed('/service-done');
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColorDark,
                   minimumSize: const Size.fromHeight(50),

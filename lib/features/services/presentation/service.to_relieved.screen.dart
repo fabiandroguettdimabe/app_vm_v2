@@ -24,13 +24,13 @@ class _ServiceConfirmScreenState extends State<ServiceToRelievedScreen> {
   @override
   Widget build(BuildContext context) {
     return AsyncBuilder(
-      future: ServiceService.getServicesConfirmed(),
+      future: ServiceService.getServicesRelieved(),
       waiting: (context) => const Center(child: CircularProgressIndicator()),
       error: (context, error, stackTrace) => Center(
         child: Text('Error: $error'),
       ),
       builder: (context, data) {
-        var services = data as List<ServiceConfirmedDto>;
+        var services = data as List<ServiceRelievedDto>;
         return Scaffold(
             appBar: AppBar(
               title: const Text('Viajes asignados'),
@@ -53,7 +53,7 @@ class _ServiceConfirmScreenState extends State<ServiceToRelievedScreen> {
     );
   }
 
-  Card buildServiceCard(ServiceConfirmedDto service) {
+  Card buildServiceCard(ServiceRelievedDto service) {
     return Card(
       elevation: 0,
       child: Wrap(
@@ -106,7 +106,7 @@ class _ServiceConfirmScreenState extends State<ServiceToRelievedScreen> {
     );
   }
 
-  Wrap buildServiceDetails(ServiceConfirmedDto service) {
+  Wrap buildServiceDetails(ServiceRelievedDto service) {
     return Wrap(
       children: [
         buildServiceDetail(
@@ -119,6 +119,8 @@ class _ServiceConfirmScreenState extends State<ServiceToRelievedScreen> {
             Mdi.accountCash, "¿Que traslada?: "),
         buildServiceDetail(
             service.journeyType!.name! ?? "", Mdi.trainCar, "Tipo de viaje : "),
+        buildServiceDetail(
+            service.relievedBy! ?? "", FontAwesome.car, "Tipo de viaje : "),
       ],
     );
   }

@@ -247,3 +247,88 @@ class ServiceStartDto {
 
   Map<String, dynamic> toJson() => _$ServiceStartDtoToJson(this);
 }
+
+@JsonSerializable()
+class ServiceFinishedDto {
+  int? id;
+  String? description;
+  String? clientName;
+  DateTime? finishDate;
+  String? collectionMethodName;
+  String? journeyTypeName;
+
+  ServiceFinishedDto({
+    this.id,
+    this.description,
+    this.clientName,
+    this.finishDate,
+    this.collectionMethodName,
+    this.journeyTypeName,
+  });
+
+  factory ServiceFinishedDto.fromJson(Map<String, dynamic> json) =>
+      _$ServiceFinishedDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServiceFinishedDtoToJson(this);
+}
+
+@JsonSerializable()
+class ServiceCancelDto {
+  int? reasonId;
+  @JsonKey(name: "logMobile")
+  LogDto? cancelLog;
+  String? reason;
+
+  ServiceCancelDto({this.reasonId, this.cancelLog, this.reason});
+
+  factory ServiceCancelDto.fromJson(Map<String, dynamic> json) =>
+      _$ServiceCancelDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServiceCancelDtoToJson(this);
+}
+
+@JsonSerializable()
+class ServiceReleaseDto {
+  int? eventReasonId;
+  @JsonKey(name: "logMobile")
+  LogDto? releaseLog;
+  String? observation;
+
+  ServiceReleaseDto({this.eventReasonId, this.releaseLog, this.observation});
+
+  factory ServiceReleaseDto.fromJson(Map<String, dynamic> json) =>
+      _$ServiceReleaseDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServiceReleaseDtoToJson(this);
+}
+
+@JsonSerializable()
+class ServiceRelievedDto {
+  int? id;
+  @JsonKey(name: 'sectionDescription')
+  String? description;
+  ClientDto? client;
+  @JsonKey(name: 'origin')
+  LocationShowDto? originLocation;
+  @JsonKey(name: 'destiny')
+  LocationShowDto? destinyLocation;
+  CollectionMethodDto? collectionMethod;
+  CollectionMethodDto? journeyType;
+  String? relievedBy;
+
+  ServiceRelievedDto(
+      {this.id,
+        this.description,
+        this.client,
+        this.originLocation,
+        this.destinyLocation,
+        this.collectionMethod,
+        this.journeyType,
+        this.relievedBy
+      });
+
+  factory ServiceRelievedDto.fromJson(Map<String, dynamic> json) => _$ServiceRelievedDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServiceRelievedDtoToJson(this);
+
+}

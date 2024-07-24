@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:app_vm/constants/constants.dart';
+import 'package:app_vm/constants/dto/type.event.dto.dart';
 import 'package:app_vm/constants/widgets/avatar.icon.title.widget.dart';
 import 'package:app_vm/features/documents/application/document.service.dart';
 import 'package:app_vm/features/documents/application/document.type.service.dart';
 import 'package:app_vm/features/documents/domain/document.dto.dart';
 import 'package:app_vm/features/documents/domain/document.type.dto.dart';
+import 'package:app_vm/features/event_reasons/application/event.reason.service.dart';
+import 'package:app_vm/features/event_reasons/domain/event.reason.dto.dart';
 import 'package:app_vm/features/services/application/dispatch.guide.service.dart';
 import 'package:app_vm/features/services/application/service.service.dart';
 import 'package:app_vm/features/services/domain/guide.number.dto.dart';
@@ -26,7 +29,7 @@ import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:map_launcher/map_launcher.dart';
-import 'package:number_editing_controller/parsed_number_format/text_controller.dart';
+import 'package:number_editing_controller/number_editing_controller.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:path/path.dart' as path;
 import 'package:badges/badges.dart' as badges;
@@ -281,7 +284,13 @@ class _ServiceScreenState extends State<ServiceScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  onPressed: () async {},
+                  onPressed: () async {
+                    Get.bottomSheet(
+                      showAddEventReason(context, value),
+                      backgroundColor: Get.theme.dialogBackgroundColor,
+                      isScrollControlled: true,
+                    );
+                  },
                 ),
               ),
               Padding(
@@ -1027,8 +1036,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                           var result = await pickImage(ImageSource.camera);
                           if (result == null) return;
                           var file = await processFile(
-                              file: result,
-                              name: path.basename(result.path));
+                              file: result, name: path.basename(result.path));
                           if (file != null) {
                             setStateFiles(() {
                               cameraFiles.add(file);
@@ -1071,8 +1079,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                           var result = await pickImage(ImageSource.gallery);
                           if (result == null) return;
                           var file = await processFile(
-                              file: result,
-                              name: path.basename(result.path));
+                              file: result, name: path.basename(result.path));
                           if (file != null) {
                             setStateFiles(() {
                               explorerFiles.add(file);
@@ -1341,5 +1348,301 @@ class _ServiceScreenState extends State<ServiceScreen> {
     }
 
     return File(newFile.path);
+  }
+
+  showAddEventReason(BuildContext context, ServiceShowMobileDto dto) {
+    var eventReasonDto = EventReasonDto();
+    var typeEventDto = TypeEventDto();
+    TextEditingController observationController = TextEditingController();
+    List<File> cameraFiles = <File>[];
+    List<File> explorerFiles = <File>[];
+    return StatefulBuilder(
+      builder: (context, setStateReason) {
+        return Wrap(
+          children: [
+            Card(
+              elevation: 10,
+              child: ListTile(
+                leading: AvatarIconTitleWidget(icon: Mdi.truckCheckOutline),
+                title: const Text("Registrar Evento/Comentario"),
+              ),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: smartSelectTypeEvent(
+                  context: context,
+                  onDtoChanged: (TypeEventDto? dto) {
+                    setStateReason(() {
+                      typeEventDto = dto!;
+                    });
+                  },
+                  dto: typeEventDto),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: smartSelectEventReason(
+                  context: context,
+                  onDtoChanged: (EventReasonDto? dto) {
+                    setStateReason(() {
+                      eventReasonDto = dto!;
+                    });
+                  },
+                  dto: eventReasonDto),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: TextFormField(
+                controller: observationController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: "Comentario",
+                  prefixIcon: AvatarIconTitleWidget(icon: Mdi.commentText),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: AsyncButtonBuilder(
+                child: Text(
+                  "Adjuntar desde la cámara",
+                  style: Get.theme.textTheme.titleSmall,
+                ),
+                onPressed: () async {
+                  var result = await pickImage(ImageSource.camera);
+                  if (result == null) return;
+                  var file = await processFile(
+                      file: result, name: path.basename(result.path));
+                  if (file != null) {
+                    setStateReason(() {
+                      cameraFiles.add(file);
+                    });
+                  }
+                },
+                builder: (context, child, callback, buttonState) {
+                  return badges.Badge(
+                    badgeContent: Text(
+                      cameraFiles.length.toString(),
+                      style: Get.theme.textTheme.titleSmall,
+                    ),
+                    badgeStyle: badges.BadgeStyle(
+                      badgeColor: secondaryColorDark,
+                    ),
+                    child: ElevatedButton.icon(
+                      onPressed: callback,
+                      label: child,
+                      icon: Icon(
+                        Mdi.cameraPlus,
+                        color: Get.iconColor,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColorDark,
+                        minimumSize: const Size.fromHeight(50),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: AsyncButtonBuilder(
+                child: Text(
+                  "Adjuntar desde los archivos",
+                  style: Get.theme.textTheme.titleSmall,
+                ),
+                onPressed: () async {
+                  var result = await pickImage(ImageSource.gallery);
+                  if (result == null) return;
+                  var file = await processFile(
+                      file: result, name: path.basename(result.path));
+                  if (file != null) {
+                    setStateReason(() {
+                      explorerFiles.add(file);
+                    });
+                  }
+                },
+                builder: (context, child, callback, buttonState) {
+                  return badges.Badge(
+                    badgeContent: Text(
+                      explorerFiles.length.toString(),
+                      style: Get.theme.textTheme.titleSmall,
+                    ),
+                    badgeStyle: badges.BadgeStyle(
+                      badgeColor: secondaryColorDark,
+                    ),
+                    child: ElevatedButton.icon(
+                      onPressed: callback,
+                      label: child,
+                      icon: Icon(
+                        Mdi.fileImagePlus,
+                        color: Get.iconColor,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColorDark,
+                        minimumSize: const Size.fromHeight(50),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const Divider(),
+            ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: [
+                AsyncButtonBuilder(
+                  child: const Text(
+                    "Cancelar",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    Get.back();
+                  },
+                  builder: (context, child, callback, buttonState) {
+                    return ElevatedButton.icon(
+                      onPressed: callback,
+                      icon: AvatarIconTitleWidget(
+                        icon: Icons.close,
+                        color: Colors.white,
+                      ),
+                      label: child,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: errorColorDark,
+                      ),
+                    );
+                  },
+                ),
+                AsyncButtonBuilder(
+                  child: const Text(
+                    "Guardar",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    if (typeEventDto.type == TypeEventEnum.CANCELLED) {
+                      var log = await createLog();
+                      var cancel = ServiceCancelDto(
+                          reason: observationController.text,
+                          cancelLog: log,
+                          reasonId: eventReasonDto.id);
+                      await ServiceService.cancelService(dto.id, cancel);
+                    }
+                    if (typeEventDto.type == TypeEventEnum.RELEASED) {
+                      var log = await createLog();
+                      var files = cameraFiles + explorerFiles;
+                      var release = ServiceReleaseDto(
+                          observation: observationController.text,
+                          releaseLog: log,
+                          eventReasonId: eventReasonDto.id);
+                      await ServiceService.releaseService(
+                          dto.id, release, files);
+                    }
+                  },
+                  builder: (context, child, callback, buttonState) {
+                    return ElevatedButton.icon(
+                      onPressed: callback,
+                      icon: AvatarIconTitleWidget(
+                        icon: Icons.save,
+                        color: Colors.white,
+                      ),
+                      label: child,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: successColor,
+                      ),
+                    );
+                  },
+                )
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  smartSelectEventReason(
+      {required BuildContext context,
+      required Function(EventReasonDto?) onDtoChanged,
+      EventReasonDto? dto}) {
+    return AsyncBuilder(
+      future: EventReasonService.getEventReasons(),
+      waiting: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      builder: (context, value) {
+        return SmartSelect.single(
+          title: "Seleccione un motivo",
+          selectedValue: dto,
+          choiceItems: choiceEventReasons(value),
+          modalHeaderStyle: S2ModalHeaderStyle(
+            centerTitle: true,
+            textStyle: Get.theme.textTheme.titleMedium,
+            actionsIconTheme: Get.theme.iconTheme,
+            iconTheme: Get.theme.iconTheme,
+          ),
+          tileBuilder: (context, state) {
+            return ListTile(
+              leading: AvatarIconTitleWidget(icon: Mdi.informationBox),
+              title: dto != null && dto!.name != null
+                  ? Text("Motivo de evento : ${dto!.name}")
+                  : const Text("Motivo de evento", textAlign: TextAlign.start),
+              dense: true,
+              onTap: state.showModal,
+              trailing: AvatarIconTitleWidget(icon: Icons.arrow_forward),
+            );
+          },
+          modalConfig: const S2ModalConfig(
+            type: S2ModalType.bottomSheet,
+          ),
+          onChange: (value) async {
+            onDtoChanged(value.value);
+          },
+        );
+      },
+    );
+  }
+
+  smartSelectTypeEvent(
+      {required BuildContext context,
+      required Function(TypeEventDto?) onDtoChanged,
+      TypeEventDto? dto}) {
+    return AsyncBuilder(
+      future: DocumentTypeService.getDocumentTypes(),
+      waiting: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+      builder: (context, value) {
+        return SmartSelect.single(
+          title: "Seleccione un tipo evento",
+          selectedValue: dto,
+          choiceItems: choiceTypeEvents(getTypesEventReason),
+          modalHeaderStyle: S2ModalHeaderStyle(
+            centerTitle: true,
+            textStyle: Get.theme.textTheme.titleMedium,
+            actionsIconTheme: Get.theme.iconTheme,
+            iconTheme: Get.theme.iconTheme,
+          ),
+          modalConfig: const S2ModalConfig(
+            type: S2ModalType.bottomSheet,
+          ),
+          tileBuilder: (context, state) {
+            return ListTile(
+              leading: AvatarIconTitleWidget(icon: Mdi.information),
+              title: dto != null && dto!.name != null
+                  ? Text("Tipo de evento : ${dto.name}")
+                  : const Text("Tipo de evento", textAlign: TextAlign.start),
+              dense: true,
+              onTap: state.showModal,
+              trailing: AvatarIconTitleWidget(icon: Icons.arrow_forward),
+            );
+          },
+          onChange: (value) async {
+            onDtoChanged(value.value);
+          },
+        );
+      },
+    );
   }
 }
