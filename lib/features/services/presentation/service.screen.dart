@@ -733,25 +733,36 @@ class _ServiceScreenState extends State<ServiceScreen> {
               title: Text("Guía de Despacho ${index + 1}"),
               subtitle: Text(guide.guideNumber ?? "Sin definir"),
               onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Wrap(
+                Get.bottomSheet(
+                    Wrap(
                       children: [
                         ListTile(
                           leading: AvatarIconTitleWidget(
                               icon: FontAwesome.tags_solid),
-                          title: const Text("Guía de Despacho"),
-                          subtitle: Text(guide.guideNumber ?? "Sin definir"),
+                          title:
+                              Text("Documentos de guia ${guide.guideNumber}"),
+                          subtitle:
+                              Text("Toque el documento para visualizarlo"),
                         ),
-                        const Divider(),
+                        showDocumentsGuide(context, guide.documents!)
+                      ],
+                    ),
+                    backgroundColor: Get.theme.dialogBackgroundColor,
+                    isScrollControlled: true);
+              },
+              trailing: AsyncButtonBuilder(
+                child: Icon(FontAwesome.trash_can),
+                onPressed: () async {
+                  Get.bottomSheet(
+                    Wrap(
+                      children: [
                         ListTile(
                           leading: AvatarIconTitleWidget(
-                              icon: FontAwesome.file_pdf_solid),
-                          title: const Text("Documento"),
-                          subtitle: Text(guide.id.toString() ?? "Sin definir"),
+                              icon: FontAwesome.tags_solid),
+                          title: Text("Eliminar Guía de Despacho"),
+                          subtitle: Text(
+                              "¿Está seguro que desea eliminar la guía de despacho ${guide.guideNumber}?"),
                         ),
-                        const Divider(),
                         ButtonBar(
                           alignment: MainAxisAlignment.center,
                           children: [
@@ -761,32 +772,50 @@ class _ServiceScreenState extends State<ServiceScreen> {
                               },
                               icon:
                                   const Icon(Icons.close, color: Colors.white),
-                              label: const Text("Cerrar",
+                              label: const Text("Cancelar",
                                   style: TextStyle(color: Colors.white)),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: errorColorDark,
                               ),
                             ),
-                            ElevatedButton.icon(
-                              onPressed: () async {
-                                await EasyLauncher.url(
-                                    url: guide.getDocumentUrl!);
-                              },
-                              icon: const Icon(Icons.open_in_browser,
-                                  color: Colors.white),
-                              label: const Text("Abrir",
-                                  style: TextStyle(color: Colors.white)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: successColor,
+                            AsyncButtonBuilder(
+                              child: const Text(
+                                "Eliminar",
+                                style: TextStyle(color: Colors.white),
                               ),
+                              onPressed: () async {
+                                await DispatchGuideService.deleteGuideNumber(
+                                    id);
+
+                              },
+                              builder: (context, child, callback, buttonState) {
+                                return ElevatedButton.icon(
+                                  onPressed: callback,
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.white),
+                                  label: child,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: errorColorDark,
+                                  ),
+                                );
+                              },
                             )
                           ],
                         )
                       ],
-                    );
-                  },
-                );
-              },
+                    ),
+                    backgroundColor: Get.theme.dialogBackgroundColor,
+                    isScrollControlled: true,
+                  );
+                },
+                builder: (context, child, callback, buttonState) {
+                  return IconButton(
+                    icon: child,
+                    onPressed: callback,
+                    color: errorColorDark,
+                  );
+                },
+              ),
             );
           },
         );
@@ -1313,6 +1342,24 @@ class _ServiceScreenState extends State<ServiceScreen> {
           itemCount: value!.length,
         );
       },
+    );
+  }
+
+  showDocumentsGuide(BuildContext context, List<DocumentDto>? list) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        var document = list![index];
+        return ListTile(
+          leading: AvatarIconTitleWidget(icon: FontAwesome.file_pdf_solid),
+          title: Text(document.name ?? "Sin definir"),
+          subtitle: Text(document.id.toString()),
+          onTap: () async {
+            await EasyLauncher.url(url: document.getDocumentUrl!);
+          },
+        );
+      },
+      itemCount: list!.length,
     );
   }
 

@@ -80,6 +80,7 @@ class _TruckScreenState extends State<TruckScreen> {
                           "Error",
                           "No se pudo escanear el codigo",
                           snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: errorColorDark,
                         );
                         return;
                       }
@@ -166,6 +167,7 @@ class _TruckScreenState extends State<TruckScreen> {
                         "Error",
                         "Seleccione un camion",
                         snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: errorColorDark,
                       );
                       return;
                     }

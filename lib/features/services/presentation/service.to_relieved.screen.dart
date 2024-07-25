@@ -33,7 +33,7 @@ class _ServiceConfirmScreenState extends State<ServiceToRelievedScreen> {
         var services = data as List<ServiceRelievedDto>;
         return Scaffold(
             appBar: AppBar(
-              title: const Text('Viajes asignados'),
+              title: const Text('Viajes para relevar'),
               actions: [
                 IconButton(
                   icon: const Icon(Icons.refresh),
@@ -76,12 +76,10 @@ class _ServiceConfirmScreenState extends State<ServiceToRelievedScreen> {
             buttonBar: GFButtonBar(
               children: [
                 AsyncButtonBuilder(
-                  child: const Text("Iniciar Viaje",
+                  child: const Text("Relevar Viaje",
                       style: TextStyle(color: Colors.white)),
                   onPressed: () async {
-                    var log = await createLog();
-                    var dto = ServiceStartDto(startLog: log);
-                    await ServiceService.startService(service.id!, dto);
+                    await ServiceService.takeOverService(service.id!);
                     setState(() {
 
                     });
@@ -120,7 +118,7 @@ class _ServiceConfirmScreenState extends State<ServiceToRelievedScreen> {
         buildServiceDetail(
             service.journeyType!.name! ?? "", Mdi.trainCar, "Tipo de viaje : "),
         buildServiceDetail(
-            service.relievedBy! ?? "", FontAwesome.car, "Tipo de viaje : "),
+            service.relievedBy! ?? "", FontAwesome.user, "Tipo de viaje : "),
       ],
     );
   }

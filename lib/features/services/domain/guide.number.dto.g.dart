@@ -10,6 +10,9 @@ GuideNumberDto _$GuideNumberDtoFromJson(Map<String, dynamic> json) =>
     GuideNumberDto(
       id: (json['id'] as num?)?.toInt(),
       guideNumber: json['guideNumber'] as String?,
+      documents: (json['documents'] as List<dynamic>?)
+          ?.map((e) => DocumentDto.fromJson(e as Map<String, dynamic>))
+          .toList(),
     )..documentUrl = json['documentUrl'] as String?;
 
 Map<String, dynamic> _$GuideNumberDtoToJson(GuideNumberDto instance) =>
@@ -17,6 +20,7 @@ Map<String, dynamic> _$GuideNumberDtoToJson(GuideNumberDto instance) =>
       'id': instance.id,
       'guideNumber': instance.guideNumber,
       'documentUrl': instance.documentUrl,
+      'documents': instance.documents,
     };
 
 GuideNumberCreateDto _$GuideNumberCreateDtoFromJson(
@@ -31,4 +35,16 @@ Map<String, dynamic> _$GuideNumberCreateDtoToJson(
     <String, dynamic>{
       'serviceLineId': instance.serviceLineId,
       'guideNumber': instance.guideNumber,
+    };
+
+GuideDeleteDto _$GuideDeleteDtoFromJson(Map<String, dynamic> json) =>
+    GuideDeleteDto(
+      deleteLog: json['deleteLog'] == null
+          ? null
+          : LogDto.fromJson(json['deleteLog'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$GuideDeleteDtoToJson(GuideDeleteDto instance) =>
+    <String, dynamic>{
+      'deleteLog': instance.deleteLog,
     };

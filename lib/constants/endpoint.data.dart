@@ -55,8 +55,14 @@ const endpointServiceFinish = '/mobile/services/finishService';
 // Service - Get Confirmed Service
 const endpointServiceConfirmed = '/mobile/services/confirmedService';
 
+// Service - Get Relieved Service
+const endpointServiceRelieved = '/mobile/services/relievedService';
+
 // Dispatch Guide - Show Document
 const endpointDispatchGuideShow = '/documentfiles/download/';
+
+// Dispatch Guide - Delete Document
+const endpointDispatchGuideDelete = '/mobile/guideNumber/delete';
 
 // Documents
 const endpointDocuments = '/mobile/documents/getAllByServiceLineId';
@@ -75,3 +81,6 @@ const endpointServiceCancel = '/mobile/services/cancelService';
 
 // Service - Release Service
 const endpointServiceRelease = '/mobile/services/releaseService';
+
+// Service - Take Over Service
+const endpointServiceTakeOver = '/mobile/services/take_over';

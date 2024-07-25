@@ -180,7 +180,8 @@ class _NewServiceScreenState extends State<NewServiceScreen> {
                 ),
                 onPressed: () async {
                   if (sectionId == null) {
-                    Get.snackbar("Error", "No se puede iniciar el viaje");
+                    Get.snackbar("Error", "No se puede iniciar el viaje",snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: errorColorDark,);
                   } else {
                     var model = CreateServiceDto(
                       sectionId: sectionId,

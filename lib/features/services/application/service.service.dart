@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:app_vm/constants/dto/response.dto.dart';
 import 'package:app_vm/constants/endpoint.data.dart';
 import 'package:app_vm/features/services/domain/service.dto.dart';
+import 'package:app_vm/theme/color.config.dart';
 import 'package:app_vm/utils/dio.util.dart';
 import 'package:dio/dio.dart' as Dio;
 import 'package:get/get.dart';
@@ -24,7 +25,9 @@ class ServiceService {
     } on Dio.DioException catch (e) {
       var errorResponse = ResponseDto.fromJson(e.response?.data);
       if (errorResponse.statusCode == 400) {
-        Get.snackbar('Error', errorResponse.message!);
+        Get.snackbar('Error', errorResponse.message!,
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: errorColorDark);
       }
     }
   }
@@ -49,7 +52,7 @@ class ServiceService {
 
   static Future<List<ServiceRelievedDto>?> getServicesRelieved() async {
     try {
-      var response = await DioUtil.dio.get(endpointServiceConfirmed);
+      var response = await DioUtil.dio.get(endpointServiceRelieved);
       if (response.statusCode != 200) return [];
       var apiResponse = ResponseListDto.fromJson(response.data);
       if (apiResponse.statusCode != 200) return [];
@@ -105,7 +108,7 @@ class ServiceService {
     } on Dio.DioException catch (e) {
       var errorResponse = ResponseDto.fromJson(e.response?.data);
       if (errorResponse.statusCode == 400) {
-        Get.snackbar('Error', errorResponse.message!);
+        Get.snackbar('Error', errorResponse.message!,snackPosition: SnackPosition.BOTTOM, backgroundColor: errorColorDark);
       }
     }
     return null;
@@ -122,7 +125,8 @@ class ServiceService {
     } on Dio.DioException catch (e) {
       var errorResponse = ResponseDto.fromJson(e.response?.data);
       if (errorResponse.statusCode == 400) {
-        Get.snackbar('Error', errorResponse.message!);
+        Get.snackbar('Error', errorResponse.message!,snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: errorColorDark,);
       }
     }
   }
@@ -138,7 +142,8 @@ class ServiceService {
     } on Dio.DioException catch (e) {
       var errorResponse = ResponseDto.fromJson(e.response?.data);
       if (errorResponse.statusCode == 400) {
-        Get.snackbar('Error', errorResponse.message!);
+        Get.snackbar('Error', errorResponse.message!,snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: errorColorDark,);
       }
     }
   }
@@ -155,16 +160,19 @@ class ServiceService {
     } on Dio.DioException catch (e) {
       var errorResponse = ResponseDto.fromJson(e.response?.data);
       if (errorResponse.statusCode == 400) {
-        Get.snackbar('Error', errorResponse.message!);
+        Get.snackbar('Error', errorResponse.message!,snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: errorColorDark,);
       }
     }
   }
 
-  static Future<void> releaseService(int? id, ServiceReleaseDto release, List<File> files) async {
+  static Future<void> releaseService(
+      int? id, ServiceReleaseDto release, List<File> files) async {
     try {
       var documentsFile = [];
       for (var file in files) {
-        var data = Dio.MultipartFile.fromFileSync(file!.path, filename: basename(file.path));
+        var data = Dio.MultipartFile.fromFileSync(file!.path,
+            filename: basename(file.path));
         documentsFile.add(data);
       }
       var formData = Dio.FormData.fromMap(
@@ -184,10 +192,29 @@ class ServiceService {
     } on Dio.DioException catch (e) {
       var errorResponse = ResponseDto.fromJson(e.response?.data);
       if (errorResponse.statusCode == 400) {
-        Get.snackbar('Error', errorResponse.message!);
+        Get.snackbar('Error', errorResponse.message!,snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: errorColorDark,);
       }
     }
   }
+
+  static Future<void> takeOverService(int? id) async {
+    try {
+      var response = await DioUtil.dio
+          .put(endpointServiceTakeOver, queryParameters: {'serviceId': id});
+      if (response.statusCode != 200) return null;
+      var apiResponse = ResponseDto.fromJson(response.data);
+      if (apiResponse.statusCode != 200) return null;
+      Get.offNamed('/service', arguments: {'id': id});
+    } on Dio.DioException catch (e) {
+      var errorResponse = ResponseDto.fromJson(e.response?.data);
+      if (errorResponse.statusCode == 400) {
+        Get.snackbar('Error', errorResponse.message!,snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: errorColorDark,);
+      }
+    }
+  }
+
 
   static Future<List<ServiceFinishedDto>?> getFinishedService(
       int? month) async {
@@ -218,13 +245,12 @@ class ServiceService {
       var apiResponse = ResponseDto.fromJson(response.data);
       if (apiResponse.statusCode != 200) return null;
       Get.back();
-    } on Dio. DioException catch (e) {
+    } on Dio.DioException catch (e) {
       var errorResponse = ResponseDto.fromJson(e.response?.data);
       if (errorResponse.statusCode == 400) {
-        Get.snackbar('Error', errorResponse.message!);
+        Get.snackbar('Error', errorResponse.message!,snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: errorColorDark,);
       }
     }
   }
-
-
 }

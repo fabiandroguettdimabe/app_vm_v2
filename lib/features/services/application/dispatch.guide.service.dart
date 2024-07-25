@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:app_vm/constants/dto/response.dto.dart';
 import 'package:app_vm/constants/endpoint.data.dart';
 import 'package:app_vm/features/services/domain/guide.number.dto.dart';
+import 'package:app_vm/features/services/domain/log.dto.dart';
+import 'package:app_vm/theme/color.config.dart';
 import 'package:app_vm/utils/dio.util.dart';
 import 'package:dio/dio.dart' as Dio;
 import 'package:get/get.dart';
@@ -41,8 +43,22 @@ class DispatchGuideService {
            data: formData);
      } on Dio.DioException catch (e) {
         var errorResponse = ResponseDto.fromJson(e.response!.data);
-        Get.snackbar("Error al subir guia", errorResponse.message!);
+        Get.snackbar("Error al subir guia", errorResponse.message!, snackPosition: SnackPosition.BOTTOM, backgroundColor: errorColorDark);
 
      }
+  }
+
+  static Future<void> deleteGuideNumber(int? id) async {
+    try {
+      var response = await DioUtil.dio.delete(endpointDispatchGuideDelete,
+          queryParameters: {'dispatchGuideId': id});
+      if (response.statusCode != 200) return null;
+      var apiResponse = ResponseDto.fromJson(response.data);
+      if (apiResponse.statusCode != 200) return null;
+      Get.back();
+    } on Dio.DioException catch (e) {
+      var errorResponse = ResponseDto.fromJson(e.response!.data);
+      Get.snackbar("Error al eliminar guia", errorResponse.message!, snackPosition: SnackPosition.BOTTOM, backgroundColor: errorColorDark);
+    }
   }
 }

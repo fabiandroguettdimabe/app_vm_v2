@@ -140,6 +140,8 @@ class _ServiceDoneScreenState extends State<ServiceDoneScreen> {
             "¿Que traslada?: "),
         buildServiceDetail(
             service.journeyTypeName ?? "", Mdi.trainCar, "Tipo de viaje : "),
+        buildServiceDetail(service.finishDate.toString(), Icons.calendar_month,
+            "Fecha de finalización: "),
       ],
     );
   }
