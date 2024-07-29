@@ -45,7 +45,8 @@ class ServiceScreen extends StatefulWidget {
 
 class _ServiceScreenState extends State<ServiceScreen> {
   ScrollController scrollController = ScrollController();
-  var id;
+  int? id;
+  bool? isSale = true;
 
   @override
   void initState() {
@@ -57,7 +58,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return AsyncBuilder(
-      future: ServiceService.getService(id),
+      future: ServiceService.getService(id!),
       waiting: (context) => const Center(
         child: CircularProgressIndicator(),
       ),
@@ -169,6 +170,25 @@ class _ServiceScreenState extends State<ServiceScreen> {
                 title: const Text("Tipo de viaje"),
                 dense: true,
                 subtitle: Text(value.journeyType!.name!),
+              ),
+              Visibility(
+                visible: value.isSale ?? false,
+                child: ListTile(
+                  leading: AvatarIconTitleWidget(icon: Mdi.cash),
+                  title: const Text("Venta"),
+                  dense: true,
+                  subtitle: const Text("Este viaje es una venta"),
+                  trailing: Switch(
+                    value: isSale!,
+                    onChanged: (value) async {
+                      var dto = ServiceEnableDto(serviceId: id, enable: value);
+                      await ServiceService.enableSaleLine(dto);
+                      setState(() {
+                        isSale = value;
+                      });
+                    },
+                  ),
+                ),
               ),
               Visibility(
                   visible: value.commissionByContainer ?? false,
@@ -506,7 +526,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                           ),
                         ),
                         const Divider(),
-                        showGuideNumbers(context, line),
+                        showGuideNumbers(context, line, setStateGuide),
                       ],
                     );
                   }), backgroundColor: Get.theme.dialogBackgroundColor);
@@ -716,7 +736,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
     );
   }
 
-  showGuideNumbers(BuildContext context, ServiceLineShowDto? line) {
+  showGuideNumbers(BuildContext context, ServiceLineShowDto? line,
+      StateSetter setStateGuide) {
     return AsyncBuilder(
       future: DispatchGuideService.getGuidesByServiceLineId(line?.id),
       waiting: (context) => const Center(
@@ -785,8 +806,9 @@ class _ServiceScreenState extends State<ServiceScreen> {
                               ),
                               onPressed: () async {
                                 await DispatchGuideService.deleteGuideNumber(
-                                    id);
-
+                                    guide.id);
+                                Get.back();
+                                setStateGuide(() {});
                               },
                               builder: (context, child, callback, buttonState) {
                                 return ElevatedButton.icon(

@@ -253,4 +253,21 @@ class ServiceService {
       }
     }
   }
+
+  static Future<void> enableSaleLine(ServiceEnableDto dto) async {
+    try {
+      var response = await DioUtil.dio.put(endpointServiceLineEnableSale,
+          data: dto.toJson());
+      if (response.statusCode != 200) return null;
+      var apiResponse = ResponseDto.fromJson(response.data);
+      if (apiResponse.statusCode != 200) return null;
+      Get.back();
+    } on Dio.DioException catch (e) {
+      var errorResponse = ResponseDto.fromJson(e.response?.data);
+      if (errorResponse.statusCode == 400) {
+        Get.snackbar('Error', errorResponse.message!,snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: errorColorDark,);
+      }
+    }
+  }
 }

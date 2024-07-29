@@ -41,7 +41,7 @@ const endpointServiceLineDispatchGuide =
     '/mobile/GuideNumber/getByServiceLineId';
 
 // Service Line - Add Guide Number [TODO - Change Url for exclusive endpoint]
-const endpointDocumentsDispatchGuide = '/documentfiles/documentDispatchGuide';
+const endpointDocumentsDispatchGuide = '/mobile/guideNumber/upload';
 
 // Service - Start
 const endpointServiceStart = '/mobile/services/startService';
@@ -59,7 +59,7 @@ const endpointServiceConfirmed = '/mobile/services/confirmedService';
 const endpointServiceRelieved = '/mobile/services/relievedService';
 
 // Dispatch Guide - Show Document
-const endpointDispatchGuideShow = '/documentfiles/download/';
+const endpointDispatchGuideShow = '/mobile/guideNumber/upload';
 
 // Dispatch Guide - Delete Document
 const endpointDispatchGuideDelete = '/mobile/guideNumber/delete';
@@ -84,3 +84,6 @@ const endpointServiceRelease = '/mobile/services/releaseService';
 
 // Service - Take Over Service
 const endpointServiceTakeOver = '/mobile/services/take_over';
+
+// Service - Enable Sale Line
+const endpointServiceLineEnableSale = '/mobile/ServiceLine/enableSale';

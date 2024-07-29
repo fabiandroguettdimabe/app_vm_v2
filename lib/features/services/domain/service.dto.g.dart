@@ -140,6 +140,7 @@ ServiceShowMobileDto _$ServiceShowMobileDtoFromJson(
           ?.map((e) => ServiceLineShowDto.fromJson(e as Map<String, dynamic>))
           .toList(),
       state: (json['state'] as num?)?.toInt(),
+      isSale: json['isSale'] as bool?,
     );
 
 Map<String, dynamic> _$ServiceShowMobileDtoToJson(
@@ -155,6 +156,7 @@ Map<String, dynamic> _$ServiceShowMobileDtoToJson(
       'containerQty': instance.containerQty,
       'serviceLines': instance.lines,
       'state': instance.state,
+      'isSale': instance.isSale,
     };
 
 ServiceLineShowDto _$ServiceLineShowDtoFromJson(Map<String, dynamic> json) =>
@@ -368,4 +370,16 @@ Map<String, dynamic> _$ServiceRelievedDtoToJson(ServiceRelievedDto instance) =>
       'collectionMethod': instance.collectionMethod,
       'journeyType': instance.journeyType,
       'relievedBy': instance.relievedBy,
+    };
+
+ServiceEnableDto _$ServiceEnableDtoFromJson(Map<String, dynamic> json) =>
+    ServiceEnableDto(
+      serviceId: (json['serviceId'] as num?)?.toInt(),
+      enable: json['enable'] as bool?,
+    );
+
+Map<String, dynamic> _$ServiceEnableDtoToJson(ServiceEnableDto instance) =>
+    <String, dynamic>{
+      'serviceId': instance.serviceId,
+      'enable': instance.enable,
     };

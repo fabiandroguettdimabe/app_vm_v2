@@ -117,6 +117,8 @@ class ServiceShowMobileDto {
   @JsonKey(name: "serviceLines")
   List<ServiceLineShowDto>? lines;
   int? state;
+  bool? isSale;
+
 
   ServiceShowMobileDto(
       {this.id,
@@ -128,7 +130,7 @@ class ServiceShowMobileDto {
       this.commissionByContainer,
       this.containerQty,
       this.lines,
-      this.state});
+      this.state,this.isSale});
 
   factory ServiceShowMobileDto.fromJson(Map<String, dynamic> json) =>
       _$ServiceShowMobileDtoFromJson(json);
@@ -333,5 +335,16 @@ class ServiceRelievedDto {
 
 }
 
+@JsonSerializable()
+class ServiceEnableDto {
+  final int? serviceId;
+  final bool? enable;
 
+  ServiceEnableDto({this.serviceId, this.enable});
+
+  factory ServiceEnableDto.fromJson(Map<String, dynamic> json) =>
+      _$ServiceEnableDtoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServiceEnableDtoToJson(this);
+}
 
